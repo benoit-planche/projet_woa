@@ -1,0 +1,101 @@
+<%- include('../partials/head'); %>
+
+  <body>
+    <%- include('../partials/header'); %>
+
+      <div class="border-top text-center "></div>
+      <main>
+        <div class="container w-75 bg-light">
+          <div class="row center p-5 m-5 text-center">
+            <div class="col">
+              <h1>40€</h1>
+              <h4>Tu dois 5 € à <a href="./vue.js">Mathis</a></h4>
+              <h4><a href="./vue.js">Mathieu</a> te dois 8 €</h4>
+            </div>
+          </div>
+        </div>
+        <%- include('listeTransaction.ejs', {listeTransaction: liste}) %>
+
+          <div class="container">
+            <div class="row">
+              <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
+                data-bs-target="#staticBackdrop">
+                Nouvelle transaction
+              </button>
+              <button class="btn col m-5 p-3  bg-secondary text-center">
+                Ajouter des amis
+              </button>
+              <button class="btn col m-5 p-3 bg-secondary text-center">
+                Gérer la cagnotte
+              </button>
+            </div>
+          </div>
+          </div>
+          <div class="m-5 p-3 border-top text-center "></div>
+          <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="row">
+                      <!-- Colonne Montant -->
+                      <div class="col-md-4">
+                        <label for="montant" class="form-label">Montant</label>
+                        <input type="text" class="form-control" id="montant" placeholder="Montant">
+                      </div>
+
+                      <!-- Colonne Date -->
+                      <div class="col-md-4">
+                        <label for="date" class="form-label">Date</label>
+                        <input type="date" class="form-control" id="date">
+                      </div>
+
+                      <!-- Colonne Créditeur -->
+                      <div class="col-md-4">
+                        <label for="crediteur" class="form-label">Créditeur</label>
+                        <select class="form-select" id="crediteur">
+                          <option selected disabled>Choisissez un créditeur</option>
+                            <% liste.forEach(element=> { %>
+                              <option value="<%= element.user %>">
+                                <%= element.user %>
+                              </option>
+                            <% }) %>
+                          <!-- Ajoute d'autres options au besoin -->
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+              </div>
+            </div>
+          </div>
+      </main>
+
+      <footer>
+      </footer>
+      <!-- Bootstrap JavaScript Libraries -->
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+        integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+        </script>
+
+      <style type="./css/my_css.css">
+      </style>
+      <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+        integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+        </script>
+  </body>
+
+  <!--Modal-->
+  <%- include('../partials/footer') %>

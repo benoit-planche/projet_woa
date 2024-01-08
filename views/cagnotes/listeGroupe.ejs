@@ -1,0 +1,16 @@
+<div class="d-grid gap-2">
+<% listeGroupe.forEach(element=> { %>
+        <button class="m-1 btn w-50 btn-light" type="button" href="<%= element.ref %>">
+            <div class="row center p-2 m-3">
+                <div class="col">
+                    <h5>
+                        <%= element.name %>
+                    </h5>
+                </div>
+
+            </div>
+        </button>
+    <div class="m-1 border-top w-50"></div>
+    <% }) %>
+
+</div>
