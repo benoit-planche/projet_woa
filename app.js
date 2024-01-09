@@ -36,10 +36,6 @@ app.use(express.static(__dirname));
 // cookie parser middleware
 app.use(cookieParser());
 
-//username and password
-const myusername = 'user1'
-const mypassword = 'mypassword'
-
 // a variable to save a session
 var session;
 let liste;
@@ -48,7 +44,6 @@ pool.query('SELECT nom_utilisateur as user, montant_depense as price, descriptio
         console.error('Erreur lors de l\'exécution de la requête :', err);
     } else {
         liste = result.rows;
-        // Do something with the 'liste' variable here
     }
 });
 let listes = [
@@ -86,6 +81,13 @@ app.post('/user',(req,res) => {
                     session=req.session;
                     session.userid=req.body.username;
                     console.log(req.session);
+                    pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses;', (err, result) => {
+                        if (err) {
+                            console.error('Erreur lors de l\'exécution de la requête :', err);
+                        } else {
+                            liste = result.rows;
+                        }
+                    });
                     res.render('cagnotes/cagnote.ejs',{liste: liste});
                     return;
                 }
