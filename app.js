@@ -1,6 +1,15 @@
 const express = require('express');
 const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
+const { Pool } = require('pg');
+
+const pool = new Pool({
+    user: 'woa_application',
+    host: '192.168.122.127',
+    database: 'woa',
+    password: 'woaPoly',
+    port: 5432,
+});
 
 const app = express();
 app.set('views', './views')
@@ -33,8 +42,16 @@ const mypassword = 'mypassword'
 
 // a variable to save a session
 var session;
-
-let liste = [
+let liste;
+pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses;', (err, result) => {
+    if (err) {
+        console.error('Erreur lors de l\'exécution de la requête :', err);
+    } else {
+        liste = result.rows;
+        // Do something with the 'liste' variable here
+    }
+});
+let listes = [
     {user: "Jules", price: 15, description: "Dernière transaction"},
     {user: "Mathieu", price: 10, description: "Deuxième transaction"},
     {user: "Mathis", price: 5, description: "Troisième transaction"},
@@ -50,8 +67,6 @@ let listeGroupe = [
     {name: "Cagnote 6", ref:"#"}
 ]
 
-document.getElementById
-
 app.get('/',(req,res) => {
     session=req.session;
     if(session.userid){
@@ -61,16 +76,25 @@ app.get('/',(req,res) => {
 });
 
 app.post('/user',(req,res) => {
-    if(req.body.username == myusername && req.body.password == mypassword){
-        session=req.session;
-        session.userid=req.body.username;
-        console.log(req.session)
-        res.render('cagnotes/cagnote.ejs',{liste: liste});
-    }
-    else{
-        res.send('Invalid username or password');
-    }
-})
+    pool.query('SELECT username_utilisateur, mdp_utilisateur FROM projet.utilisateurs', (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+            res.status(500).send('Erreur serveur');
+        } else {
+            for (let row of result.rows) {
+                if(req.body.username == row.username_utilisateur && req.body.password == row.mdp_utilisateur){
+                    session=req.session;
+                    session.userid=req.body.username;
+                    console.log(req.session);
+                    res.render('cagnotes/cagnote.ejs',{liste: liste});
+                    return;
+                }
+            }
+            res.send('Invalid username or password');
+        }
+    })
+});
+    
 
 app.get('/compte/views', (req,res) => {
     res.render('compte/views');
