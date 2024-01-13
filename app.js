@@ -54,22 +54,13 @@ let listes = [
     ];
 
 let listeGroupe;
-    pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses;', (err, result) => {
+    pool.query('SELECT id_groupe as ref, nom_groupe as name FROM projet.groupes;', (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
-            liste = result.rows;
+            listeGroupe = result.rows;
         }
     });
-
-let listeGroupes = [
-    {name: "Cagnote 1", ref:"/cagnotes/cagnote"},
-    {name: "Cagnote 2", ref:"#"},
-    {name: "Cagnote 3", ref:"#"},
-    {name: "Cagnote 4", ref:"#"},
-    {name: "Cagnote 5", ref:"#"},
-    {name: "Cagnote 6", ref:"#"}
-]
 
 app.get('/',(req,res) => {
     session=req.session;
@@ -79,8 +70,19 @@ app.get('/',(req,res) => {
     res.render('index.ejs')
 });
 
+app.post('/cagnotes/cagnote',(req,res) => {
+    pool.query("SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses WHERE id_groupe = $1;",[req.id], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+        } else {
+            liste = result.rows;
+        }
+    });
+    res.render('cagnotes/cagnote.ejs',{liste: liste});
+});
+
 app.post('/user',(req,res) => {
-    pool.query('SELECT username_utilisateur, mdp_utilisateur FROM projet.utilisateurs', (err, result) => {
+    pool.query('SELECT username_utilisateur, mdp_utilisateur, dernier_page FROM projet.utilisateurs', (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
             res.status(500).send('Erreur serveur');
@@ -90,15 +92,32 @@ app.post('/user',(req,res) => {
                     session=req.session;
                     session.userid=req.body.username;
                     console.log(req.session);
-                    pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses;', (err, result) => {
-                        if (err) {
-                            console.error('Erreur lors de l\'exécution de la requête :', err);
-                        } else {
-                            liste = result.rows;
-                        }
-                    });
-                    res.render('cagnotes/cagnote.ejs',{liste: liste});
-                    return;
+
+                    if(row.dernier_page != null){
+                        pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses WHERE id_groupe = dernier_page;', (err, result) => {
+                            if (err) {
+                                console.error('Erreur lors de l\'exécution de la requête :', err);
+                            } else {
+                                liste = result.rows;
+                            }
+                        });
+                        res.render('cagnotes/cagnote.ejs',{liste: liste});
+
+                    }
+                    else {
+                        pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes;', (err, result) => {
+                            if (err) {
+                                console.error('Erreur lors de l\'exécution de la requête :', err);
+                            } else {
+                                let listeGroupe = [
+                                    {name: "", ref: ""}
+                                ]
+                                listeGroupe = result.rows;
+                                
+                            }
+                        });
+                        res.render('cagnotes/groupes',{listeGroupe: listeGroupe});
+                    }
                 }
             }
             res.send('Invalid username or password');
@@ -116,10 +135,9 @@ app.post('/connexion', (req,res) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
             res.status(500).send('Erreur serveur');
-        } else {    
-            res.render('index.ejs');
-        }
+        } 
     })
+    res.render('index.ejs');
 })
 
 app.post('/compte/inscription', (req,res) => {

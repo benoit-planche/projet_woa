@@ -5,6 +5,42 @@
   <%- include('../partials/header'); %>
 
   <%- include('listeGroupe.ejs', {listeGroupe: listeGroupe}) %>
+
+  
+  <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
+  data-bs-target="#staticBackdrop">Créer un nouveau groupe</button>
+
+  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Nouveau groupe</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                    <div class="row">
+                      <!-- Colonne Montant -->
+                      <div class="col-md-4">
+                        <label for="montant" class="form-label">Nom du groupe</label>
+                        <input type="text" class="form-control" id="montant" placeholder="Nom du groupe">
+                      </div>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+                  </form>
+                </div>
+                <div class="modal-footer">
+                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                  <button type="button" class="btn btn-primary">Understood</button>
+                </div>
+              </div>
+            </div>
+          </div>
+
+  
 </body>
 
 <%- include('../partials/footer') %>
