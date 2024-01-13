@@ -28,13 +28,6 @@ form input[type="submit"] {
     margin-top: 2rem;
     padding: 0.4rem;
 }
-form input[type="sub"] {
-    background: linear-gradient(to left, #0f2864, #b29bd6);
-    color: white;
-    border-radius: 4px;
-    margin-top: 2rem;
-    padding: 0.4rem;
-}
 
 .logo {
     -moz-border-radius: 4px;

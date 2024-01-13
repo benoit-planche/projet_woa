@@ -53,7 +53,16 @@ let listes = [
     {user: "Benoit", price: 10, description: "Quatrième transaction"}
     ];
 
-let listeGroupe = [
+let listeGroupe;
+    pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses;', (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+        } else {
+            liste = result.rows;
+        }
+    });
+
+let listeGroupes = [
     {name: "Cagnote 1", ref:"/cagnotes/cagnote"},
     {name: "Cagnote 2", ref:"#"},
     {name: "Cagnote 3", ref:"#"},
@@ -100,6 +109,21 @@ app.post('/user',(req,res) => {
 
 app.get('/compte/views', (req,res) => {
     res.render('compte/views');
+})
+
+app.post('/connexion', (req,res) => {
+    pool.query('INSERT INTO projet.utilisateurs (nom_utilisateur, prenom_utilisateur, username_utilisateur, mdp_utilisateur, mail_utilisateur) VALUES ($1, $2, $3, $4, $5)', [req.body.nom, req.body.prenom, req.body.username, req.body.password, req.body.mail], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+            res.status(500).send('Erreur serveur');
+        } else {    
+            res.render('index.ejs');
+        }
+    })
+})
+
+app.post('/compte/inscription', (req,res) => {
+    res.render('compte/inscription');
 })
 
 app.get('/groupe', (req,res) => {

@@ -1,11 +1,11 @@
 <html>
 <head>
-    <link rel="stylesheet" href="css/app.css">
+    <link rel="stylesheet" href="../../css/app.css">
 </head>
 <body>
     <div>
-        <form action="index.ejs" method="post">
-            <h2>Login</h2>
+        <h2>Renseignez les informations suivante pour créer votre utilisateur</h2>
+        <form action="/connexion" method="post">
             <div class="input-field">
                 <input type="text" name="username" id="username" placeholder="Entrer Username">
             </div>
@@ -21,7 +21,7 @@
             <div class="input-field">
                 <input type="password" name="password" id="password" placeholder="Entrer Password">
             </div>
-            <input type="sub" value="s'inscrir">
+            <input type="submit" value="s'inscrire">
         </form>
     </div>
 </body>
