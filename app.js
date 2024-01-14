@@ -46,8 +46,9 @@ app.get('/',(req,res) => {
     session=req.session;
     if(session.userid){
         res.redirect(307, '/cagnotes/cagnote');
-    }else
-    res.render('index.ejs')
+    }else{
+        res.render('index.ejs')
+    }
 });
 
 app.post('/cagnotes/cagnote',(req,res) => {
@@ -116,7 +117,7 @@ app.post('/compte/inscription', (req,res) => {
 })
 
 app.get('/groupe', (req,res) => {
-    pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes;', (err, result) => {
+    pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes NATURAL JOIN projet.faitparties f natural join projet.utilisateurs u where u.username_utilisateur = $1;',[session.userid] , (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
