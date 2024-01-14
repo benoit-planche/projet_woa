@@ -9,13 +9,12 @@
           <div class="row center p-5 m-5 text-center">
             <div class="col">
               <h4>Dépense global du groupe :</h4>
-              <h1>40€</h1>
+              <h1><%= totalDepense %></h1>
               <h4><a href="">Egaliser les dépenses</a></h4>
             </div>
           </div>
         </div>
-        <%- include('listeTransaction.ejs', {listeTransaction: liste}) %>
-
+        <%- include('listeTransaction.ejs', {listeTransaction: liste, session: session}) %>
           <div class="container">
             <div class="row">
               <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"

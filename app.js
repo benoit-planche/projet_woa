@@ -36,93 +36,64 @@ app.use(express.static(__dirname));
 // cookie parser middleware
 app.use(cookieParser());
 
-// a variable to save a session
+// variable global
 var session;
 let liste;
-pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses;', (err, result) => {
-    if (err) {
-        console.error('Erreur lors de l\'exécution de la requête :', err);
-    } else {
-        liste = result.rows;
-    }
-});
-let listes = [
-    {user: "Jules", price: 15, description: "Dernière transaction"},
-    {user: "Mathieu", price: 10, description: "Deuxième transaction"},
-    {user: "Mathis", price: 5, description: "Troisième transaction"},
-    {user: "Benoit", price: 10, description: "Quatrième transaction"}
-    ];
-
+let totalDepense;
 let listeGroupe;
-    pool.query('SELECT id_groupe as ref, nom_groupe as name FROM projet.groupes;', (err, result) => {
-        if (err) {
-            console.error('Erreur lors de l\'exécution de la requête :', err);
-        } else {
-            listeGroupe = result.rows;
-        }
-    });
 
 app.get('/',(req,res) => {
     session=req.session;
     if(session.userid){
-        res.render('cagnotes/cagnote.ejs',{liste: liste});
+        res.redirect(307, '/cagnotes/cagnote');
     }else
     res.render('index.ejs')
 });
 
 app.post('/cagnotes/cagnote',(req,res) => {
-    pool.query("SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses WHERE id_groupe = $1;",[req.id], (err, result) => {
+    pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)',[session.dernier_page] , (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
             liste = result.rows;
+            pool.query('SELECT g.total_depense as totalDepense FROM projet.groupes g WHERE id_groupe = $1;',[session.dernier_page], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                } else {
+                    totalDepense = result.rows[0].totaldepense;
+                    res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, session: session});
+                }
+            });
         }
-    });
-    res.render('cagnotes/cagnote.ejs',{liste: liste});
+    });    
+    
 });
 
-app.post('/user',(req,res) => {
+app.post('/user', (req, res) => {
     pool.query('SELECT username_utilisateur, mdp_utilisateur, dernier_page FROM projet.utilisateurs', (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
             res.status(500).send('Erreur serveur');
         } else {
             for (let row of result.rows) {
-                if(req.body.username == row.username_utilisateur && req.body.password == row.mdp_utilisateur){
-                    session=req.session;
-                    session.userid=req.body.username;
+                if (req.body.username == row.username_utilisateur && req.body.password == row.mdp_utilisateur) {
+                    session = req.session;
+                    session.userid = req.body.username;
+                    session.dernier_page = row.dernier_page;
                     console.log(req.session);
-
-                    if(row.dernier_page != null){
-                        pool.query('SELECT nom_utilisateur as user, montant_depense as price, description_depense as description FROM projet.utilisateurs NATURAL JOIN projet.depenses WHERE id_groupe = dernier_page;', (err, result) => {
-                            if (err) {
-                                console.error('Erreur lors de l\'exécution de la requête :', err);
-                            } else {
-                                liste = result.rows;
-                            }
-                        });
-                        res.render('cagnotes/cagnote.ejs',{liste: liste});
-
-                    }
-                    else {
-                        pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes;', (err, result) => {
-                            if (err) {
-                                console.error('Erreur lors de l\'exécution de la requête :', err);
-                            } else {
-                                let listeGroupe = [
-                                    {name: "", ref: ""}
-                                ]
-                                listeGroupe = result.rows;
-                                
-                            }
-                        });
-                        res.render('cagnotes/groupes',{listeGroupe: listeGroupe});
-                    }
                 }
             }
-            res.send('Invalid username or password');
+            if (session == null) {
+                res.send('Invalid username or password');
+            } else {
+                if (session.dernier_page != null) {
+                    res.redirect(307, '/cagnotes/cagnote');
+                } else {
+                    res.redirect('/groupe');
+                }
+            }
         }
-    })
+    });
 });
     
 
@@ -145,6 +116,14 @@ app.post('/compte/inscription', (req,res) => {
 })
 
 app.get('/groupe', (req,res) => {
+    pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes;', (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+        } else {
+            listeGroupe = result.rows;
+            
+        }
+    });
     res.render('cagnotes/groupes',{listeGroupe: listeGroupe});
 })
 

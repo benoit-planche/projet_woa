@@ -1,17 +1,22 @@
 <div class="d-grid gap-2">
-<% listeGroupe.forEach(element=> { %>
-    <form action="/cagnotes/cagnote" method="POST">
-        <input type="hidden" name="id" value="<%= element.ref %>">
-        <button class="m-1 btn w-50 btn-light" type="submit">
-            <div class="row center p-2 m-3">
-                <div class="col">
-                    <h5>
-                        <%= element.name %>
-                    </h5>
+
+<% if (listeGroupe && listeGroupe.length > 0) { %>
+    <% listeGroupe.forEach(element=> { %>
+        <form action="/cagnotes/cagnote" method="POST">
+            <input type="hidden" name="id" value="<%= element.ref %>">
+            <button class="m-1 btn w-50 btn-light" type="submit">
+                <div class="row center p-2 m-3">
+                    <div class="col">
+                        <h5>
+                            <%= element.name %>
+                        </h5>
+                    </div>
                 </div>
-            </div>
-        </button>
-    </form>
-    <div class="m-1 border-top w-50"></div>
-<% }) %>
+            </button>
+        </form>
+        <div class="m-1 border-top w-50"></div>
+    <% }) %>
+<% } else { %>
+    <h5>Vous particitez à aucune cagnotte </h5>
+<% } %>
 </div>
