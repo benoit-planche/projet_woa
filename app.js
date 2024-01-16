@@ -52,6 +52,9 @@ app.get('/',(req,res) => {
 });
 
 app.post('/cagnotes/cagnote',(req,res) => {
+    if (req.body.id != null) {
+        session.dernier_page = req.body.id;
+    }
     pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)',[session.dernier_page] , (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
@@ -122,13 +125,18 @@ app.get('/groupe', (req,res) => {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
             listeGroupe = result.rows;
-            
+            res.render('cagnotes/groupes',{listeGroupe: listeGroupe});
         }
     });
-    res.render('cagnotes/groupes',{listeGroupe: listeGroupe});
+    
 })
 
 app.get('/logout',(req,res) => {
+    pool.query('UPDATE projet.utilisateurs SET dernier_page = $1 WHERE username_utilisateur = $2', [session.dernier_page, session.userid], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+        }
+    });
     req.session.destroy();
     res.redirect('/');
 });

@@ -14,7 +14,11 @@
             </div>
           </div>
         </div>
-        <%- include('listeTransaction.ejs', {listeTransaction: liste, session: session}) %>
+        
+        <div class="scrollable-segment">
+          <%- include('listeTransaction.ejs', {listeTransaction: liste, session: session}) %>
+        </div>
+        
           <div class="container">
             <div class="row">
               <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
@@ -36,7 +40,7 @@
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Modal title</h1>
+                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Nouvelle transaction</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
@@ -45,37 +49,34 @@
                       <!-- Colonne Montant -->
                       <div class="col-md-4">
                         <label for="montant" class="form-label">Montant</label>
-                        <input type="text" class="form-control" id="montant" placeholder="Montant">
+                        <input type="text" class="form-control" id="montant" placeholder="Montant" required>
                       </div>
 
                       <!-- Colonne Date -->
                       <div class="col-md-4">
                         <label for="date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="date">
+                        <input type="date" class="form-control" id="date" required>
                       </div>
 
                       <!-- Colonne Créditeur -->
                       <div class="col-md-4">
                         <label for="crediteur" class="form-label">Créditeur</label>
-                        <select class="form-select" id="crediteur">
+                        <select class="form-select" id="crediteur" required>
                           <option selected disabled>Choisissez un créditeur</option>
-                            <% liste.forEach(element=> { %>
-                              <option value="<%= element.user %>">
-                                <%= element.user %>
-                              </option>
-                            <% }) %>
-                          <!-- Ajoute d'autres options au besoin -->
+                          <% liste.forEach(element=> { %>
+                          <option value="<%= element.user %>">
+                            <%= element.user %>
+                          </option>
+                          <% }) %>
+                          <!-- Ajoutez d'autres options au besoin -->
                         </select>
                       </div>
                     </div>
 
                     <!-- Bouton de soumission -->
                     <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+                    <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
                   </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Understood</button>
                 </div>
               </div>
             </div>
