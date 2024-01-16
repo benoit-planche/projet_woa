@@ -135,6 +135,76 @@ app.post('/user', (req, res) => {
     });
 });
     
+app.post('/update', (req, res) => { 
+    switch (req.body.ref) {
+        case 'update_email': 
+            pool.query('UPDATE projet.utilisateurs SET mail_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.email, session.username], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                } else {
+                    res.redirect(307, '/compte/views');
+                }
+            });
+            break;
+        case 'update_nom':
+            pool.query('UPDATE projet.utilisateurs SET nom_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.nom, session.username], (err, result) => {  
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                } else {
+                    res.redirect(307, '/compte/views');
+                }
+            });
+            break;
+        case 'update_prenom':
+            pool.query('UPDATE projet.utilisateurs SET prenom_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.prenom, session.username], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                } else {
+                    res.redirect(307, '/compte/views');
+                }
+            });
+            break;
+        case 'update_password':
+            if (req.body.password == req.body.password2) {
+                pool.query('UPDATE projet.utilisateurs SET mdp_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.password, session.username], (err, result) => {
+                    if (err) {
+                        console.error('Erreur lors de l\'exécution de la requête :', err);
+                    } else {
+                        res.redirect(307, '/compte/views');
+                    }
+                });
+            }
+            else {
+                res.redirect(307, '/compte/views');
+            }
+            break;
+        default:
+            res.redirect(307, '/compte/views');
+            break;
+
+    }
+});
+
+app.post('/compte/views', (req,res) => {
+    pool.query('SELECT * FROM projet.utilisateurs WHERE username_utilisateur = $1', [session.username], (err, result) => {
+        if(err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+        } else {
+            user = result.rows[0];
+            res.render('compte/views', {user: user});
+        }
+    });
+});
+
+app.post('/connexion', (req,res) => {
+    pool.query('INSERT INTO projet.utilisateurs (nom_utilisateur, prenom_utilisateur, username_utilisateur, mdp_utilisateur, mail_utilisateur) VALUES ($1, $2, $3, $4, $5)', [req.body.nom, req.body.prenom, req.body.username, req.body.password, req.body.mail], (err, result) => {
+        if (err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+            res.status(500).send('Erreur serveur');
+        } 
+    });
+    res.render('index.ejs');
+});
 
 app.post('/compte/views', (req,res) => {
     pool.query('SELECT * FROM projet.utilisateurs WHERE username_utilisateur = $1', [session.username], (err, result) => {

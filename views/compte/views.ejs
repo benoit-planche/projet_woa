@@ -8,10 +8,11 @@
         <h1 class="title">Votre compte</h1>
 
         <form action="/update" method="POST" class="form-inline mx-3">
+            <input type="hidden" name="ref" value="update_email">
             <div class="form-group row">
                 <label for="staticEmail" class="col-sm-1 col-form-label">Email</label>
                 <div class="col-sm-4">
-                    <input type="text" readonly class="form-control" id="staticEmail" value="<%= user.mail_utilisateur %>">
+                    <input type="text" name="email" class="form-control" id="staticEmail" value="<%= user.mail_utilisateur %>">
                 </div>
                 <div class="col-sm-4"> 
                     <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mail</button>
@@ -20,10 +21,11 @@
         </form> 
 
         <form action="/update" method="POST" class="form-inline mx-3">
+            <input type="hidden" name="ref" value="update_prenom">
             <div class="form-group row">
                 <label for="staticFirstName" class="col-sm-1 col-form-label">Prénom</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="staticFirstName" value="<%= user.prenom_utilisateur %>">
+                    <input type="text" name="prenom" class="form-control" id="staticFirstName" value="<%= user.prenom_utilisateur %>">
                 </div>
                 <div class="col-sm-4"> 
                     <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le prénom</button>
@@ -32,10 +34,11 @@
         </form> 
 
         <form action="/update" method="POST" class="form-inline mx-3">
+            <input type="hidden" name="ref" value="update_nom">
             <div class="form-group row">
                 <label for="staticLastName" class="col-sm-1 col-form-label">Nom</label>
                 <div class="col-sm-4">
-                    <input type="text" class="form-control" id="staticLastName" value="<%= user.nom_utilisateur %>">
+                    <input type="text" name="nom" class="form-control" id="staticLastName" value="<%= user.nom_utilisateur %>">
                 </div>
                 <div class="col-sm-4"> 
                     <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le nom</button>
@@ -44,12 +47,13 @@
         </form> 
 
         <form action="/update" method="POST" class="form-inline mx-3">
+            <input type="hidden" name="ref" value="update_mdp">
             <div class="form-group row">
                     <div class="form-group row">
                         <label for="inputPassword" class="col-sm-1 col-form-label">Mot de passe</label>
                         <div class="col-sm-4">
-                            <input type="password" class="form-control mb-1" id="inputPassword" placeholder="Nouveau mot de passe" required>
-                            <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Confirmer le mot de passe" required>
+                            <input type="password"  name="password" class="form-control mb-1" id="inputPassword" placeholder="Nouveau mot de passe" required>
+                            <input type="password"  name="password2" class="form-control" id="inputConfirmPassword" placeholder="Confirmer le mot de passe" required>
                         </div>
                         <div class="col-sm-4"> 
                             <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mot de passe</button>
@@ -58,7 +62,7 @@
                 </div>
             </div>
         </form> 
-        <button type="submit" href='/logout' class="btn btn-secondary mb-2">Déconnection</button>
+        <button type="submit" href='/logout' class="btn btn-secondary mx-3">Déconnection</button>
     </div>
     <%- include('../partials/footer'); %>
 </body>
