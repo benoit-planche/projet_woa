@@ -1,7 +1,26 @@
 <%- include('../partials/head'); %>
 
-    <body>
-        <%- include('../partials/header'); %>
-            <p>Welcome User <a href='/logout'>click to logout</a></p>
-    </body>
+<body>
+    <%- include('../partials/header'); %>
+
+    <h1 class="title">Edit User Information</h1>
+
+    <form action="/update" method="POST" class="form">
+        <label for="name" class="label">Nom:</label>
+        <input type="text" id="nom" name="nom" value="<%= user.nom_utilisateur %>" class="input">
+
+        <label for="name" class="label">Prenom:</label>
+        <input type="text" id="prenom" name="prenom" value="<%= user.prenom_utilisateur %>" class="input">
+
+        <label for="email" class="label">Email:</label>
+        <input type="email" id="mail" name="mail" value="<%= user.mail_utilisateur %>" class="input">
+
+        <label for="password" class="label">Password:</label>
+        <input type="password" id="password" name="password" class="input">
+
+        <button type="submit" class="button">Enregistrer les changements</button>
+    </form>
+    <button type="submit" href='/logout' class="button">Déconnection</button>
+    <%- include('../partials/footer'); %>
+</body>
     <%- include('../partials/footer'); %>

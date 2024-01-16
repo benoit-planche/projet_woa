@@ -137,7 +137,16 @@ app.post('/user', (req, res) => {
     
 
 app.post('/compte/views', (req,res) => {
-    res.render('compte/views');
+    pool.query('SELECT * FROM projet.utilisateurs WHERE username_utilisateur = $1', [session.username], (err, result) => {
+        if(err) {
+            console.error('Erreur lors de l\'exécution de la requête :', err);
+        }
+        else {
+            user = result.rows[0];
+            res.render('compte/views', {user: user});
+        }
+    });
+    
 })
 
 app.post('/connexion', (req,res) => {
