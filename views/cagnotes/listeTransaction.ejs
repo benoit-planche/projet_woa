@@ -4,7 +4,7 @@
         <div class="container w-75 bg-light">
             <div class="row center p-2 m-3">
                 <div class="col">
-                    <% if (element.username == session.userid) { %>
+                    <% if (element.username == session.username) { %>
                         <h5> Tu as payé <%= element.price %> €. Libeller "<%= element.description %>"</h5>
                     <% } else { %>
                         <h5> <a href="./vue.js">

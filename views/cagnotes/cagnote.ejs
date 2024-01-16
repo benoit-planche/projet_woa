@@ -25,8 +25,9 @@
                 data-bs-target="#staticNewTrasac">
                 Nouvelle transaction
               </button>
-              <button class="btn col m-5 p-3  bg-secondary text-center">
-                Ajouter des amis
+              <button class="btn col m-5 p-3  bg-secondary text-center" data-bs-toggle="modal"
+              data-bs-target="#staticNewMembre">
+                Ajouter des membres
               </button>
               <button class="btn col m-5 p-3 bg-secondary text-center">
                 Gérer la cagnotte
@@ -66,6 +67,40 @@
                           <% liste.forEach(element=> { %>
                           <option value="<%= element.user %>">
                             <%= element.user %>
+                          </option>
+                          <% }) %>
+                          <!-- Ajoutez d'autres options au besoin -->
+                        </select>
+                      </div>
+                    </div>
+
+                    <!-- Bouton de soumission -->
+                    <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+                    <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <div class="modal fade" id="staticNewMembre" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticNewMembreLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+              <div class="modal-content">
+                <div class="modal-header">
+                  <h1 class="modal-title fs-5" id="staticNewMembreLabel">Ajouter un membre</h1>
+                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                  <form>
+                      <div class="col">
+                        <label for="crediteur" class="form-label">Choisissez le nouveau menbre parmi vos amis</label>
+                        <select class="form-select" id="crediteur" required>
+                          <option selected disabled>Amis</option>
+                          <% listeAmis.forEach(element=> { %>
+                          
+                          <option value="<%= element.username %>">
+                            <%= element.username %>
                           </option>
                           <% }) %>
                           <!-- Ajoutez d'autres options au besoin -->

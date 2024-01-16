@@ -2,6 +2,7 @@ const express = require('express');
 const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
 const { Pool } = require('pg');
+const e = require('express');
 
 const pool = new Pool({
     user: 'woa_application',
@@ -44,9 +45,17 @@ let listeGroupe;
 
 
 function groupe(req, res) {
+    if (req.body.ref == 'new_groupe') {
+        pool.query('INSERT INTO projet.groupes (nom_groupe, total_depense, id_owner) VALUES ($1, $2, $3)', [req.body.nom_groupe, 0, session.userid], (err, result) => {
+            if (err) {
+                console.error('Erreur lors de l\'exécution de la requête :', err);
+            }
+        });
+    }
+
     session = req.session;
-    if (session.userid) {
-        pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes NATURAL JOIN projet.faitparties f natural join projet.utilisateurs u where u.username_utilisateur = $1;',[session.userid] , (err, result) => {
+    if (session.username) {
+        pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes NATURAL JOIN projet.faitparties f natural join projet.utilisateurs u where u.username_utilisateur = $1;',[session.username] , (err, result) => {
             if (err) {
                 console.error('Erreur lors de l\'exécution de la requête :', err);
             } else {
@@ -61,7 +70,7 @@ function groupe(req, res) {
 
 app.get('/',(req,res) => {
     session=req.session;
-    if(session.userid){
+    if(session.username){
         res.redirect(307, '/groupe');
     }else{
         res.render('index.ejs')
@@ -82,7 +91,15 @@ app.post('/cagnotes/cagnote',(req,res) => {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
                     totalDepense = result.rows[0].totaldepense;
-                    res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, session: session});
+                    pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE a.id_utilisateur = $1 or a.id_amis = $1;',[session.userid], (err, result) => {
+                        if (err) {
+                            console.error('Erreur lors de l\'exécution de la requête :', err);
+                        } else {
+                            listeAmis = result.rows;
+                            res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, listeAmis: listeAmis, session: session});
+                        }
+                    
+                    });
                 }
             });
         }
@@ -91,7 +108,7 @@ app.post('/cagnotes/cagnote',(req,res) => {
 });
 
 app.post('/user', (req, res) => {
-    pool.query('SELECT username_utilisateur, mdp_utilisateur, dernier_page FROM projet.utilisateurs', (err, result) => {
+    pool.query('SELECT id_utilisateur, username_utilisateur, mdp_utilisateur, dernier_page FROM projet.utilisateurs', (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
             res.status(500).send('Erreur serveur');
@@ -99,8 +116,9 @@ app.post('/user', (req, res) => {
             for (let row of result.rows) {
                 if (req.body.username == row.username_utilisateur && req.body.password == row.mdp_utilisateur) {
                     session = req.session;
-                    session.userid = req.body.username;
+                    session.username = req.body.username;
                     session.dernier_page = row.dernier_page;
+                    session.userid = row.id_utilisateur;
                     console.log(req.session);
                 }
             }
@@ -128,7 +146,7 @@ app.post('/connexion', (req,res) => {
             console.error('Erreur lors de l\'exécution de la requête :', err);
             res.status(500).send('Erreur serveur');
         } 
-    })
+    });
     res.render('index.ejs');
 })
 
@@ -141,7 +159,7 @@ app.post('/groupe', groupe);
 app.get('/groupe', groupe);
 
 app.get('/logout',(req,res) => {
-    pool.query('UPDATE projet.utilisateurs SET dernier_page = $1 WHERE username_utilisateur = $2', [session.dernier_page, session.userid], (err, result) => {
+    pool.query('UPDATE projet.utilisateurs SET dernier_page = $1 WHERE username_utilisateur = $2', [session.dernier_page, session.username], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         }
