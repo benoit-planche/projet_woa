@@ -8,18 +8,18 @@
 
   
   <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
-  data-bs-target="#staticBackdrop">Créer un nouveau groupe</button>
+  data-bs-target="#staticNewGroup">Créer un nouveau groupe</button>
 
-  <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+  <div class="modal fade" id="staticNewGroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticNewGroupLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
               <div class="modal-content">
                 <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="staticBackdropLabel">Nouveau groupe</h1>
+                  <h1 class="modal-title fs-5" id="staticNewGroupLabel">Nouveau groupe</h1>
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <form>
+                  <form action="/groupe" method="post">
                     <div class="row">
                       <!-- Colonne Montant -->
                       <div class="col-md-4">
@@ -27,19 +27,26 @@
                         <input type="text" class="form-control" id="montant" placeholder="Nom du groupe">
                       </div>
                     </div>
-
+                    <input type="hidden" name="ref" value="newGroupe">
                     <!-- Bouton de soumission -->
                     <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+                    <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
                   </form>
-                </div>
-                <div class="modal-footer">
-                  <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                  <button type="button" class="btn btn-primary">Understood</button>
                 </div>
               </div>
             </div>
           </div>
 
+          <!-- Bootstrap JavaScript Libraries -->
+      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+      </script>
+
+    <style type="./css/my_css.css">
+    </style>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+      integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+      </script>
   
 </body>
 

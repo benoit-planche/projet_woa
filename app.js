@@ -93,7 +93,7 @@ app.post('/user', (req, res) => {
                 if (session.dernier_page != null) {
                     res.redirect(307, '/cagnotes/cagnote');
                 } else {
-                    res.redirect('/groupe');
+                    res.redirect(307, '/groupe');
                 }
             }
         }
@@ -101,7 +101,7 @@ app.post('/user', (req, res) => {
 });
     
 
-app.get('/compte/views', (req,res) => {
+app.post('/compte/views', (req,res) => {
     res.render('compte/views');
 })
 
@@ -119,7 +119,7 @@ app.post('/compte/inscription', (req,res) => {
     res.render('compte/inscription');
 })
 
-app.get('/groupe', (req,res) => {
+app.post('/groupe', (req,res) => {
     pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes NATURAL JOIN projet.faitparties f natural join projet.utilisateurs u where u.username_utilisateur = $1;',[session.userid] , (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
