@@ -3,24 +3,63 @@
 <body>
     <%- include('../partials/header'); %>
 
-    <h1 class="title">Edit User Information</h1>
+    <div class="border-top mx-5 ">
 
-    <form action="/update" method="POST" class="form">
-        <label for="name" class="label">Nom:</label>
-        <input type="text" id="nom" name="nom" value="<%= user.nom_utilisateur %>" class="input">
+        <h1 class="title">Votre compte</h1>
 
-        <label for="name" class="label">Prenom:</label>
-        <input type="text" id="prenom" name="prenom" value="<%= user.prenom_utilisateur %>" class="input">
+        <form action="/update" method="POST" class="form-inline mx-3">
+            <div class="form-group row">
+                <label for="staticEmail" class="col-sm-1 col-form-label">Email</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly class="form-control" id="staticEmail" value="<%= user.mail_utilisateur %>">
+                </div>
+                <div class="col-sm-4"> 
+                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mail</button>
+                </div>
+            </div>
+        </form> 
 
-        <label for="email" class="label">Email:</label>
-        <input type="email" id="mail" name="mail" value="<%= user.mail_utilisateur %>" class="input">
+        <form action="/update" method="POST" class="form-inline mx-3">
+            <div class="form-group row">
+                <label for="staticFirstName" class="col-sm-1 col-form-label">Prénom</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="staticFirstName" value="<%= user.prenom_utilisateur %>">
+                </div>
+                <div class="col-sm-4"> 
+                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le prénom</button>
+                </div>
+            </div>
+        </form> 
 
-        <label for="password" class="label">Password:</label>
-        <input type="password" id="password" name="password" class="input">
+        <form action="/update" method="POST" class="form-inline mx-3">
+            <div class="form-group row">
+                <label for="staticLastName" class="col-sm-1 col-form-label">Nom</label>
+                <div class="col-sm-4">
+                    <input type="text" class="form-control" id="staticLastName" value="<%= user.nom_utilisateur %>">
+                </div>
+                <div class="col-sm-4"> 
+                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le nom</button>
+                </div>
+            </div>
+        </form> 
 
-        <button type="submit" class="button">Enregistrer les changements</button>
-    </form>
-    <button type="submit" href='/logout' class="button">Déconnection</button>
+        <form action="/update" method="POST" class="form-inline mx-3">
+            <div class="form-group row">
+                    <div class="form-group row">
+                        <label for="inputPassword" class="col-sm-1 col-form-label">Mot de passe</label>
+                        <div class="col-sm-4">
+                            <input type="password" class="form-control mb-1" id="inputPassword" placeholder="Nouveau mot de passe" required>
+                            <input type="password" class="form-control" id="inputConfirmPassword" placeholder="Confirmer le mot de passe" required>
+                        </div>
+                        <div class="col-sm-4"> 
+                            <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mot de passe</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </form> 
+        <button type="submit" href='/logout' class="btn btn-secondary mb-2">Déconnection</button>
+    </div>
     <%- include('../partials/footer'); %>
 </body>
     <%- include('../partials/footer'); %>
