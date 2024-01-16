@@ -14,9 +14,15 @@
                 <div class="col-sm-4">
                     <input type="text" name="email" class="form-control" id="staticEmail" value="<%= user.mail_utilisateur %>">
                 </div>
-                <div class="col-sm-4"> 
+                <div class="col-sm-1"> 
                     <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mail</button>
                 </div>
+                <% if (success.mail) { %>
+                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                        Mail changé avec succès !
+                    </div>
+                 <% } %>
+                
             </div>
         </form> 
 
@@ -30,6 +36,11 @@
                 <div class="col-sm-4"> 
                     <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le prénom</button>
                 </div>
+                <% if (success.prenom) { %>
+                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                        Prénom changé avec succès !
+                    </div>
+                 <% } %>
             </div>
         </form> 
 
@@ -43,6 +54,11 @@
                 <div class="col-sm-4"> 
                     <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le nom</button>
                 </div>
+                <% if (success.nom) { %>
+                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                        Nom changé avec succès !
+                    </div>
+                 <% } %>
             </div>
         </form> 
 
@@ -60,9 +76,17 @@
                         </div>
                     </div>
                 </div>
+                <% if (success.mdp) { %>
+                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                        Mot de passe changé avec succès !
+                    </div>
+                 <% } %>
             </div>
         </form> 
-        <button type="submit" href='/logout' class="btn btn-secondary mx-3">Déconnection</button>
+        <form action="/logout" method="POST" class="form-inline mx-3">
+            <button type="submit" href='/logout' class="btn btn-secondary mx-3">Déconnexion</button>
+        </form>
+        
     </div>
     <%- include('../partials/footer'); %>
 </body>

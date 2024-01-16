@@ -39,10 +39,15 @@ app.use(cookieParser());
 
 // variable global
 var session;
+let success = {
+    nom: false,
+    prenom: false,
+    mail: false,
+    mdp: false
+};;
 let liste;
 let totalDepense;
 let listeGroupe;
-
 
 function groupe(req, res) {
     if (req.body.ref == 'new_groupe') {
@@ -108,40 +113,41 @@ app.post('/cagnotes/cagnote',(req,res) => {
 });
 
 app.post('/user', (req, res) => {
-    pool.query('SELECT id_utilisateur, username_utilisateur, mdp_utilisateur, dernier_page FROM projet.utilisateurs', (err, result) => {
+    pool.query('SELECT * FROM projet.utilisateurs WHERE username_utilisateur = $1 AND mdp_utilisateur::password = $2;', [req.body.username, req.body.password], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
-            res.status(500).send('Erreur serveur');
         } else {
-            for (let row of result.rows) {
-                if (req.body.username == row.username_utilisateur && req.body.password == row.mdp_utilisateur) {
-                    session = req.session;
-                    session.username = req.body.username;
-                    session.dernier_page = row.dernier_page;
-                    session.userid = row.id_utilisateur;
-                    console.log(req.session);
-                }
-            }
-            if (session == null) {
-                res.send('Invalid username or password');
-            } else {
+            console.log(result.rows);
+            if (result.rows.length > 0) {
+                session = req.session;
+                session.username = req.body.username;
+                session.userid = result.rows[0].id_utilisateur;
+                session.dernier_page = result.rows[0].dernier_page;
+                
                 if (session.dernier_page != null) {
                     res.redirect(307, '/cagnotes/cagnote');
                 } else {
                     res.redirect(307, '/groupe');
                 }
-            }
+            }   
         }
     });
 });
     
-app.post('/update', (req, res) => { 
+app.post('/update', (req, res) => {
+    success = {
+        nom: false,
+        prenom: false,
+        mail: false,
+        mdp: false
+    };
     switch (req.body.ref) {
         case 'update_email': 
             pool.query('UPDATE projet.utilisateurs SET mail_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.email, session.username], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
+                    success.mail = true;
                     res.redirect(307, '/compte/views');
                 }
             });
@@ -151,6 +157,7 @@ app.post('/update', (req, res) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
+                    success.nom = true;
                     res.redirect(307, '/compte/views');
                 }
             });
@@ -160,16 +167,18 @@ app.post('/update', (req, res) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
+                    success.prenom = true;
                     res.redirect(307, '/compte/views');
                 }
             });
             break;
-        case 'update_password':
+        case 'update_mdp':
             if (req.body.password == req.body.password2) {
                 pool.query('UPDATE projet.utilisateurs SET mdp_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.password, session.username], (err, result) => {
                     if (err) {
                         console.error('Erreur lors de l\'exécution de la requête :', err);
                     } else {
+                        success.mdp = true;
                         res.redirect(307, '/compte/views');
                     }
                 });
@@ -186,34 +195,20 @@ app.post('/update', (req, res) => {
 });
 
 app.post('/compte/views', (req,res) => {
-    pool.query('SELECT * FROM projet.utilisateurs WHERE username_utilisateur = $1', [session.username], (err, result) => {
-        if(err) {
-            console.error('Erreur lors de l\'exécution de la requête :', err);
-        } else {
-            user = result.rows[0];
-            res.render('compte/views', {user: user});
-        }
-    });
-});
-
-app.post('/connexion', (req,res) => {
-    pool.query('INSERT INTO projet.utilisateurs (nom_utilisateur, prenom_utilisateur, username_utilisateur, mdp_utilisateur, mail_utilisateur) VALUES ($1, $2, $3, $4, $5)', [req.body.nom, req.body.prenom, req.body.username, req.body.password, req.body.mail], (err, result) => {
-        if (err) {
-            console.error('Erreur lors de l\'exécution de la requête :', err);
-            res.status(500).send('Erreur serveur');
-        } 
-    });
-    res.render('index.ejs');
-});
-
-app.post('/compte/views', (req,res) => {
+    let get_success = success;
+    success = {
+        nom: false,
+        prenom: false,
+        mail: false,
+        mdp: false
+    };
     pool.query('SELECT * FROM projet.utilisateurs WHERE username_utilisateur = $1', [session.username], (err, result) => {
         if(err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         }
         else {
             user = result.rows[0];
-            res.render('compte/views', {user: user});
+            res.render('compte/views', {user: user, success: get_success});
         }
     });
     
@@ -237,7 +232,7 @@ app.post('/groupe', groupe);
 
 app.get('/groupe', groupe);
 
-app.get('/logout',(req,res) => {
+app.post('/logout',(req,res) => {
     pool.query('UPDATE projet.utilisateurs SET dernier_page = $1 WHERE username_utilisateur = $2', [session.dernier_page, session.username], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
