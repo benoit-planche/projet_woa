@@ -1,53 +1,53 @@
-
 <%- include('../partials/head'); %>
 
-<body>
-  <%- include('../partials/header'); %>
+  <body>
+    <%- include('../partials/header'); %>
 
-  <%- include('listeGroupe.ejs', {listeGroupe: listeGroupe}) %>
+      <%- include('listeGroupe.ejs', {listeGroupe: listeGroupe}) %>
 
-  
-  <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
-  data-bs-target="#staticNewGroup">Créer un nouveau groupe</button>
 
-  <div class="modal fade" id="staticNewGroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-            aria-labelledby="staticNewGroupLabel" aria-hidden="true">
-            <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
-              <div class="modal-content">
-                <div class="modal-header">
-                  <h1 class="modal-title fs-5" id="staticNewGroupLabel">Nouveau groupe</h1>
-                  <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                </div>
-                <div class="modal-body">
-                  <form action="/groupe" method="post">
-                    <div class="row">
-                      <!-- Colonne Nom  du Groupe -->
-                      <div class="col-md-4">
-                        <label for="montant" class="form-label">Nom du groupe</label>
-                        <input type="text" class="form-control" name="nom_groupe" id="nom_groupe" placeholder="Nom du groupe">
-                      </div>
+        <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
+          data-bs-target="#staticNewGroup">Créer un nouveau groupe</button>
+
+        <div class="modal fade" id="staticNewGroup" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticNewGroupLabel" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticNewGroupLabel">Nouveau groupe</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form action="/groupe" method="post">
+                  <div class="row">
+                    <!-- Colonne Nom  du Groupe -->
+                    <div class="col-md-4">
+                      <label for="montant" class="form-label">Nom du groupe</label>
+                      <input type="text" class="form-control" name="nom_groupe" id="nom_groupe"
+                        placeholder="Nom du groupe">
                     </div>
-                    <input type="hidden" name="ref" value="new_groupe">
-                    <!-- Bouton de soumission -->
-                    <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
-                    <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
-                  </form>
-                </div>
+                  </div>
+                  <input type="hidden" name="ref" value="new_groupe">
+                  <!-- Bouton de soumission -->
+                  <button type="submit" class="btn btn-primary mt-3">Envoyer</button>
+                  <button type="button" class="btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
+                </form>
               </div>
             </div>
           </div>
+        </div>
 
-          <!-- Bootstrap JavaScript Libraries -->
-      <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
-      integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
-      </script>
+        <!-- Bootstrap JavaScript Libraries -->
+        <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"
+          integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous">
+          </script>
 
-    <style type="./css/my_css.css">
-    </style>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
-      integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
-      </script>
-  
-</body>
+        <style type="./css/my_css.css">
+        </style>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+          integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz" crossorigin="anonymous">
+          </script>
 
-<%- include('../partials/footer') %>
+  </body>
+
+  <%- include('../partials/footer') %>

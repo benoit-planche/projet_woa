@@ -1,12 +1,13 @@
 <div class="form-group row">
-    <% demande_amis.forEach(amis => { %>
+    <% demande_amis.forEach(amis=> { %>
         <div class="col-sm-4 alert alert-primary m-2 fade show" role="alert">
             <form action="/update" method="post">
                 <input type="hidden" name="username" value="<%= amis.username %>">
-                <h5>Demande d'amis de <%= amis.username %></h5>
-                <button type="submit" class ="btn btn-success" name="ref" value="amis_accepte">Accepter</button>
+                <h5>Demande d'amis de <%= amis.username %>
+                </h5>
+                <button type="submit" class="btn btn-success" name="ref" value="amis_accepte">Accepter</button>
                 <button type="submit" class="btn btn-danger" name="ref" value="amis_refuse">Refuser</button>
             </form>
         </div>
-    <% }); %>
+        <% }); %>
 </div>

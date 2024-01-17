@@ -1,129 +1,137 @@
 <%- include('../partials/head'); %>
 
-<body>
-    <%- include('../partials/header'); %>
+    <body>
+        <%- include('../partials/header'); %>
 
-    <div class="border-top mx-5 ">
+            <div class="border-top mx-5 ">
 
-        <%- include('../compte/listeDemandeAmis', {demande_amis: demande_amis}); %>
+                <%- include('../compte/listeDemandeAmis', {demande_amis: demande_amis}); %>
 
-        <h1>Ajouter un ami</h1>
+                    <h1>Ajouter un ami</h1>
 
-        <form action="/update" method="POST" class="form-inline mx-3">
-            <input type="hidden" name="ref" value="add_amis">
-            <div class="form-group row">
-                <label for="staticAmis" class="col-sm-1 col-form-label">Username :</label>
-                <div class="col-sm-4">
-                    <input type="text" name="username" class="form-control" id="staticAmis" value="">
-                </div>
-                <div class="col-sm-1"> 
-                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Ajouter</button>
-                </div>
-                <% if (success.amis) { %>
-                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
-                        Amis ajouté avec succès !
-                    </div>
-                 <% } %>
-                
+                    <form action="/update" method="POST" class="form-inline mx-3">
+                        <input type="hidden" name="ref" value="add_amis">
+                        <div class="form-group row">
+                            <label for="staticAmis" class="col-sm-1 col-form-label">Username :</label>
+                            <div class="col-sm-4">
+                                <input type="text" name="username" class="form-control" id="staticAmis" value="">
+                            </div>
+                            <div class="col-sm-1">
+                                <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Ajouter</button>
+                            </div>
+                            <% if (success.amis) { %>
+                                <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                                    Amis ajouté avec succès !
+                                </div>
+                                <% } %>
+
+                        </div>
+                    </form>
             </div>
-        </form>
-    </div>
 
-    <div class="border-top mx-5 ">
+            <div class="border-top mx-5 ">
 
-        <h1 class="title">Votre compte</h1>
+                <h1 class="title">Votre compte</h1>
 
-        <form action="/update" method="POST" class="form-inline mx-3">
-            <input type="hidden" name="ref" value="update_email">
-            <div class="form-group row">
-                <label for="staticUsername" class="col-sm-1 col-form-label">Username</label>
-                <div class="col-sm-4">
-                    <input type="text" readonly name="username" class="form-control" id="staticUsername" value="<%= user.username_utilisateur %>">
-                </div>                
-            </div>
-        </form> 
-
-        <form action="/update" method="POST" class="form-inline mx-3">
-            <input type="hidden" name="ref" value="update_email">
-            <div class="form-group row">
-                <label for="staticEmail" class="col-sm-1 col-form-label">Email</label>
-                <div class="col-sm-4">
-                    <input type="text" name="email" class="form-control" id="staticEmail" value="<%= user.mail_utilisateur %>">
-                </div>
-                <div class="col-sm-1"> 
-                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mail</button>
-                </div>
-                <% if (success.mail) { %>
-                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
-                        Mail changé avec succès !
-                    </div>
-                 <% } %>
-                
-            </div>
-        </form> 
-
-        <form action="/update" method="POST" class="form-inline mx-3">
-            <input type="hidden" name="ref" value="update_prenom">
-            <div class="form-group row">
-                <label for="staticFirstName" class="col-sm-1 col-form-label">Prénom</label>
-                <div class="col-sm-4">
-                    <input type="text" name="prenom" class="form-control" id="staticFirstName" value="<%= user.prenom_utilisateur %>">
-                </div>
-                <div class="col-sm-4"> 
-                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le prénom</button>
-                </div>
-                <% if (success.prenom) { %>
-                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
-                        Prénom changé avec succès !
-                    </div>
-                 <% } %>
-            </div>
-        </form> 
-
-        <form action="/update" method="POST" class="form-inline mx-3">
-            <input type="hidden" name="ref" value="update_nom">
-            <div class="form-group row">
-                <label for="staticLastName" class="col-sm-1 col-form-label">Nom</label>
-                <div class="col-sm-4">
-                    <input type="text" name="nom" class="form-control" id="staticLastName" value="<%= user.nom_utilisateur %>">
-                </div>
-                <div class="col-sm-4"> 
-                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le nom</button>
-                </div>
-                <% if (success.nom) { %>
-                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
-                        Nom changé avec succès !
-                    </div>
-                 <% } %>
-            </div>
-        </form> 
-
-        <form action="/update" method="POST" class="form-inline mx-3">
-            <input type="hidden" name="ref" value="update_mdp">
-            <div class="form-group row">
+                <form action="/update" method="POST" class="form-inline mx-3">
+                    <input type="hidden" name="ref" value="update_email">
                     <div class="form-group row">
-                        <label for="inputPassword" class="col-sm-1 col-form-label">Mot de passe</label>
+                        <label for="staticUsername" class="col-sm-1 col-form-label">Username</label>
                         <div class="col-sm-4">
-                            <input type="password"  name="password" class="form-control mb-1" id="inputPassword" placeholder="Nouveau mot de passe" required>
-                            <input type="password"  name="password2" class="form-control" id="inputConfirmPassword" placeholder="Confirmer le mot de passe" required>
-                        </div>
-                        <div class="col-sm-4"> 
-                            <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mot de passe</button>
+                            <input type="text" readonly name="username" class="form-control" id="staticUsername"
+                                value="<%= user.username_utilisateur %>">
                         </div>
                     </div>
-                </div>
-                <% if (success.mdp) { %>
-                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
-                        Mot de passe changé avec succès !
+                </form>
+
+                <form action="/update" method="POST" class="form-inline mx-3">
+                    <input type="hidden" name="ref" value="update_email">
+                    <div class="form-group row">
+                        <label for="staticEmail" class="col-sm-1 col-form-label">Email</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="email" class="form-control" id="staticEmail"
+                                value="<%= user.mail_utilisateur %>">
+                        </div>
+                        <div class="col-sm-1">
+                            <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mail</button>
+                        </div>
+                        <% if (success.mail) { %>
+                            <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                                Mail changé avec succès !
+                            </div>
+                            <% } %>
+
                     </div>
-                 <% } %>
+                </form>
+
+                <form action="/update" method="POST" class="form-inline mx-3">
+                    <input type="hidden" name="ref" value="update_prenom">
+                    <div class="form-group row">
+                        <label for="staticFirstName" class="col-sm-1 col-form-label">Prénom</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="prenom" class="form-control" id="staticFirstName"
+                                value="<%= user.prenom_utilisateur %>">
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le
+                                prénom</button>
+                        </div>
+                        <% if (success.prenom) { %>
+                            <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                                Prénom changé avec succès !
+                            </div>
+                            <% } %>
+                    </div>
+                </form>
+
+                <form action="/update" method="POST" class="form-inline mx-3">
+                    <input type="hidden" name="ref" value="update_nom">
+                    <div class="form-group row">
+                        <label for="staticLastName" class="col-sm-1 col-form-label">Nom</label>
+                        <div class="col-sm-4">
+                            <input type="text" name="nom" class="form-control" id="staticLastName"
+                                value="<%= user.nom_utilisateur %>">
+                        </div>
+                        <div class="col-sm-4">
+                            <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le nom</button>
+                        </div>
+                        <% if (success.nom) { %>
+                            <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                                Nom changé avec succès !
+                            </div>
+                            <% } %>
+                    </div>
+                </form>
+
+                <form action="/update" method="POST" class="form-inline mx-3">
+                    <input type="hidden" name="ref" value="update_mdp">
+                    <div class="form-group row">
+                        <div class="form-group row">
+                            <label for="inputPassword" class="col-sm-1 col-form-label">Mot de passe</label>
+                            <div class="col-sm-4">
+                                <input type="password" name="password" class="form-control mb-1" id="inputPassword"
+                                    placeholder="Nouveau mot de passe" required>
+                                <input type="password" name="password2" class="form-control" id="inputConfirmPassword"
+                                    placeholder="Confirmer le mot de passe" required>
+                            </div>
+                            <div class="col-sm-4">
+                                <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Changer le mot de
+                                    passe</button>
+                            </div>
+                        </div>
+                    </div>
+                    <% if (success.mdp) { %>
+                        <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                            Mot de passe changé avec succès !
+                        </div>
+                        <% } %>
             </div>
-        </form> 
-        <form action="/logout" method="POST" class="form-inline mx-3">
-            <button type="submit" href='/logout' class="btn btn-secondary mx-3">Déconnexion</button>
-        </form>
-        
-    </div>
-    <%- include('../partials/footer'); %>
-</body>
+            </form>
+            <form action="/logout" method="POST" class="form-inline mx-3">
+                <button type="submit" href='/logout' class="btn btn-secondary mx-3">Déconnexion</button>
+            </form>
+
+            </div>
+            <%- include('../partials/footer'); %>
+    </body>
     <%- include('../partials/footer'); %>

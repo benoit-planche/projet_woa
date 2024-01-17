@@ -22,7 +22,7 @@ const oneDay = 1000 * 60 * 60 * 24;
 //session middleware
 app.use(sessions({
     secret: "thisismysecrctekeyfhrgfgrfrty84fwir767",
-    saveUninitialized:true,
+    saveUninitialized: true,
     cookie: { maxAge: oneDay },
     resave: false
 }));
@@ -60,12 +60,12 @@ function groupe(req, res) {
 
     session = req.session;
     if (session.username) {
-        pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes NATURAL JOIN projet.faitparties f natural join projet.utilisateurs u where u.username_utilisateur = $1;',[session.username] , (err, result) => {
+        pool.query('SELECT nom_groupe as name, id_groupe as ref FROM projet.groupes NATURAL JOIN projet.faitparties f natural join projet.utilisateurs u where u.username_utilisateur = $1;', [session.username], (err, result) => {
             if (err) {
                 console.error('Erreur lors de l\'exécution de la requête :', err);
             } else {
                 listeGroupe = result.rows;
-                res.render('cagnotes/groupes',{listeGroupe: listeGroupe});
+                res.render('cagnotes/groupes', { listeGroupe: listeGroupe });
             }
         });
     } else {
@@ -73,47 +73,41 @@ function groupe(req, res) {
     }
 }
 
-app.get('/',(req,res) => {
-    session=req.session;
-    if(session.username){
+app.get('/', (req, res) => {
+    session = req.session;
+    if (session.username) {
         res.redirect(307, '/groupe');
-    }else{
+    } else {
         res.render('index.ejs')
     }
 });
 
-app.post('/cagnotes/cagnote',(req,res) => {
+app.post('/cagnotes/cagnote', (req, res) => {
     if (req.body.id != null) {
         session.dernier_page = req.body.id;
     }
-    pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)  order by date_depense desc;',[session.dernier_page] , (err, result) => {
+    pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)  order by date_depense desc;', [session.dernier_page], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
             liste = result.rows;
 
-            pool.query('SELECT g.total_depense as totalDepense, g.id_owner as owner FROM projet.groupes g WHERE id_groupe = $1;',[session.dernier_page], (err, result) => {
+            pool.query('SELECT g.total_depense as totalDepense, g.id_owner as owner FROM projet.groupes g WHERE id_groupe = $1;', [session.dernier_page], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
                     totalDepense = result.rows[0].totaldepense;
                     liste.owner = result.rows[0].owner;
-                    pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE u.id_utilisateur != $1 and (a.id_utilisateur = $1 or a.id_amis = $1);',[session.userid], (err, result) => {
+                    pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE u.id_utilisateur != $1 and (a.id_utilisateur = $1 or a.id_amis = $1);', [session.userid], (err, result) => {
                         if (err) {
                             console.error('Erreur lors de l\'exécution de la requête :', err);
                         } else {
                             listeAmis = result.rows;
-                            pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.faitparties f ON u.id_utilisateur = f.id_utilisateur WHERE f.id_groupe = $1;',[session.dernier_page], (err, result) => {
+                            pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.faitparties f ON u.id_utilisateur = f.id_utilisateur WHERE f.id_groupe = $1;', [session.dernier_page], (err, result) => {
                                 if (err) {
                                     console.error('Erreur lors de l\'exécution de la requête :', err);
                                 } else {
-                                                                    }
-                            });
-                        }
-                    });
-                }
-            });
-            listeMembres = result.rows;
+                                    listeMembres = result.rows;
                                     let listeAmisNonMembres = [];
                                     listeAmis.forEach(user => {
                                         let isMember = false;
@@ -127,11 +121,24 @@ app.post('/cagnotes/cagnote',(req,res) => {
                                         }
                                     });
 
-                                    res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, listeAmis: listeAmisNonMembres, listeMembres: listeMembres, listeAmisNonMembres: listeAmisNonMembres, session: session});
-
+                                    res.render('cagnotes/cagnote.ejs',
+                                        {
+                                            liste: liste,
+                                            totalDepense: totalDepense,
+                                            listeAmis: listeAmisNonMembres,
+                                            listeMembres: listeMembres,
+                                            listeAmisNonMembres: listeAmisNonMembres,
+                                            session: session
+                                        });
+                                }
+                            });
+                        }
+                    });
+                }
+            });
         }
-    });    
-    
+    });
+
 });
 
 app.post('/user', (req, res) => {
@@ -145,17 +152,17 @@ app.post('/user', (req, res) => {
                 session.username = req.body.username;
                 session.userid = result.rows[0].id_utilisateur;
                 session.dernier_page = result.rows[0].dernier_page;
-                
+
                 if (session.dernier_page != null) {
                     res.redirect(307, '/cagnotes/cagnote');
                 } else {
                     res.redirect(307, '/groupe');
                 }
-            }   
+            }
         }
     });
 });
-    
+
 app.post('/update', (req, res) => {
     switch (req.body.ref) {
 
@@ -171,7 +178,7 @@ app.post('/update', (req, res) => {
             pool.query('INSERT INTO projet.depenses (id_groupe, id_utilisateur, montant_depense, description_depense, date_depense) VALUES ($1, (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2), $3, $4, $5)', [session.dernier_page, req.body.crediteur, req.body.montant, req.body.description, req.body.date], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
-                } 
+                }
                 res.redirect(307, '/cagnotes/cagnote');
             });
             break;
@@ -215,7 +222,7 @@ app.post('/update', (req, res) => {
             });
             break;
 
-        case 'update_email': 
+        case 'update_email':
             pool.query('UPDATE projet.utilisateurs SET mail_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.email, session.username], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
@@ -226,7 +233,7 @@ app.post('/update', (req, res) => {
             });
             break;
         case 'update_nom':
-            pool.query('UPDATE projet.utilisateurs SET nom_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.nom, session.username], (err, result) => {  
+            pool.query('UPDATE projet.utilisateurs SET nom_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.nom, session.username], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
@@ -267,7 +274,7 @@ app.post('/update', (req, res) => {
     }
 });
 
-app.post('/compte/views', (req,res) => {
+app.post('/compte/views', (req, res) => {
     let get_success = success;
     success = {
         nom: false,
@@ -277,36 +284,36 @@ app.post('/compte/views', (req,res) => {
         amis: false
     };
     pool.query('SELECT * FROM projet.utilisateurs WHERE username_utilisateur = $1', [session.username], (err, result) => {
-        if(err) {
+        if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         }
         else {
             user = result.rows[0];
             pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_utilisateur WHERE a.id_amis = (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $1) and valide_amis = false ;', [session.username], (err, result) => {
-                if(err) {
+                if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 }
                 else {
                     demande_amis = result.rows;
-                    res.render('compte/views', {user: user, success: get_success, demande_amis: demande_amis});
+                    res.render('compte/views', { user: user, success: get_success, demande_amis: demande_amis });
                 }
-            });   
+            });
         }
     });
-    
+
 })
 
-app.post('/connexion', (req,res) => {
+app.post('/connexion', (req, res) => {
     pool.query('INSERT INTO projet.utilisateurs (nom_utilisateur, prenom_utilisateur, username_utilisateur, mdp_utilisateur, mail_utilisateur) VALUES ($1, $2, $3, $4, $5)', [req.body.nom, req.body.prenom, req.body.username, req.body.password, req.body.mail], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
             res.status(500).send('Erreur serveur');
-        } 
+        }
     });
     res.render('index.ejs');
 })
 
-app.post('/compte/inscription', (req,res) => {
+app.post('/compte/inscription', (req, res) => {
     res.render('compte/inscription');
 });
 
@@ -314,7 +321,7 @@ app.post('/groupe', groupe);
 
 app.get('/groupe', groupe);
 
-app.post('/logout',(req,res) => {
+app.post('/logout', (req, res) => {
     pool.query('UPDATE projet.utilisateurs SET dernier_page = $1 WHERE username_utilisateur = $2', [session.dernier_page, session.username], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
