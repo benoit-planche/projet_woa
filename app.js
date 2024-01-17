@@ -91,19 +91,26 @@ app.post('/cagnotes/cagnote',(req,res) => {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
             liste = result.rows;
+
             pool.query('SELECT g.total_depense as totalDepense FROM projet.groupes g WHERE id_groupe = $1;',[session.dernier_page], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
                     totalDepense = result.rows[0].totaldepense;
-                    pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE a.id_utilisateur = $1 or a.id_amis = $1;',[session.userid], (err, result) => {
+                    pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE u.id_utilisateur != $1 and (a.id_utilisateur = $1 or a.id_amis = $1);',[session.userid], (err, result) => {
                         if (err) {
                             console.error('Erreur lors de l\'exécution de la requête :', err);
                         } else {
                             listeAmis = result.rows;
-                            res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, listeAmis: listeAmis, session: session});
+                            pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.faitparties f ON u.id_utilisateur = f.id_utilisateur WHERE f.id_groupe = $1;',[session.dernier_page], (err, result) => {
+                                if (err) {
+                                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                                } else {
+                                    listeMembres = result.rows;
+                                    res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, listeAmis: listeAmis, listeMembres: listeMembres, session: session});
+                                }
+                            });
                         }
-                    
                     });
                 }
             });

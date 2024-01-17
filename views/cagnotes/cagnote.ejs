@@ -64,9 +64,9 @@
                         <label for="crediteur" class="form-label">Créditeur</label>
                         <select class="form-select" id="crediteur" required>
                           <option selected disabled>Choisissez un créditeur</option>
-                          <% liste.forEach(element=> { %>
-                          <option value="<%= element.user %>">
-                            <%= element.user %>
+                          <% listeMembres.forEach(element=> { %>
+                          <option value="<%= element.username %>">
+                            <%= element.username %>
                           </option>
                           <% }) %>
                           <!-- Ajoutez d'autres options au besoin -->
