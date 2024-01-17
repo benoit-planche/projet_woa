@@ -142,6 +142,20 @@ app.post('/update', (req, res) => {
         mdp: false
     };
     switch (req.body.ref) {
+
+        case 'amis_refuse':
+            break;
+
+        case 'amis_accepte':
+            pool.query('UPDATE projet.amis SET valide_amis = true WHERE id_utilisateur = (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $1) AND id_amis = (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2)', [session.username, req.body.username], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                } else {
+                    res.redirect(307, '/compte/views');
+                }
+            });
+            break;
+
         case 'update_email': 
             pool.query('UPDATE projet.utilisateurs SET mail_utilisateur = $1 WHERE username_utilisateur = $2', [req.body.email, session.username], (err, result) => {
                 if (err) {
@@ -208,7 +222,15 @@ app.post('/compte/views', (req,res) => {
         }
         else {
             user = result.rows[0];
-            res.render('compte/views', {user: user, success: get_success});
+            pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis where a.valide_amis = false and a.id_utilisateur = (SELECT id_utilisateur FROM projet.utilisateurs where username_utilisateur = $1 ) OR a.id_amis = ( SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $1);', [session.username], (err, result) => {
+                if(err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                }
+                else {
+                    demande_amis = result.rows;
+                    res.render('compte/views', {user: user, success: get_success, demande_amis: demande_amis});
+                }
+            });   
         }
     });
     

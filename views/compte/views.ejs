@@ -5,7 +5,43 @@
 
     <div class="border-top mx-5 ">
 
+        <%- include('../compte/listeDemandeAmis', {demande_amis: demande_amis}); %>
+
+        <h1>Ajouter un ami</h1>
+
+        <form action="/add" method="POST" class="form-inline mx-3">
+            <input type="hidden" name="ref" value="add_amis">
+            <div class="form-group row">
+                <label for="staticAmis" class="col-sm-1 col-form-label">Username :</label>
+                <div class="col-sm-4">
+                    <input type="text" name="amis" class="form-control" id="staticAmis" value="">
+                </div>
+                <div class="col-sm-1"> 
+                    <button type="submit" class="btn btn-primary mb-2 btn-fixed-width">Ajouter</button>
+                </div>
+                <% if (success.amis) { %>
+                    <div class="col-sm-2 alert alert-success mb-2 fade show" role="alert">
+                        Amis ajouté avec succès !
+                    </div>
+                 <% } %>
+                
+            </div>
+        </form>
+    </div>
+
+    <div class="border-top mx-5 ">
+
         <h1 class="title">Votre compte</h1>
+
+        <form action="/update" method="POST" class="form-inline mx-3">
+            <input type="hidden" name="ref" value="update_email">
+            <div class="form-group row">
+                <label for="staticUsername" class="col-sm-1 col-form-label">Username</label>
+                <div class="col-sm-4">
+                    <input type="text" readonly name="username" class="form-control" id="staticUsername" value="<%= user.username_utilisateur %>">
+                </div>                
+            </div>
+        </form> 
 
         <form action="/update" method="POST" class="form-inline mx-3">
             <input type="hidden" name="ref" value="update_email">
