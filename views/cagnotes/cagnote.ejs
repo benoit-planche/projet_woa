@@ -110,9 +110,9 @@
                     <label for="crediteur" class="form-label">Choisissez le nouveau menbre parmi vos amis</label>
                     <select class="form-select" name="membre" id="membre" required>
                       <option selected disabled>Amis</option>
-                      <% listeAmis.forEach(element=> { %>
-                        <option value="<%= element.username %>">
-                          <%= element.username %>
+                      <% listeAmis.forEach(username=> { %>
+                        <option value="<%= username %>">
+                          <%= username %>
                         </option>
                         <% }) %>
                     </select>

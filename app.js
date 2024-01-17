@@ -173,6 +173,7 @@ app.post('/update', (req, res) => {
                 }
                 res.redirect(307, '/cagnotes/cagnote');
             });
+            break;
 
         case 'add_transaction':
             pool.query('INSERT INTO projet.depenses (id_groupe, id_utilisateur, montant_depense, description_depense, date_depense) VALUES ($1, (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2), $3, $4, $5)', [session.dernier_page, req.body.crediteur, req.body.montant, req.body.description, req.body.date], (err, result) => {
