@@ -29,9 +29,11 @@
               data-bs-target="#staticNewMembre">
                 Ajouter des membres
               </button>
-              <button class="btn col m-5 p-3 bg-secondary text-center">
-                Gérer la cagnotte
-              </button>
+              <% if (liste.owner == session.owner) { %>
+                <button class="btn col m-5 p-3 bg-secondary text-center">
+                  Gérer la cagnotte
+                </button>
+              <% } %>
             </div>
           </div>
           </div>
@@ -45,32 +47,38 @@
                   <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
                 <div class="modal-body">
-                  <form>
+                  <form action="/update" method="post">
+                    <input type="hidden" name="ref" value="add_transaction">
                     <div class="row">
                       <!-- Colonne Montant -->
-                      <div class="col-md-4">
+                      <div class="col-md-3">
                         <label for="montant" class="form-label">Montant</label>
-                        <input type="text" class="form-control" id="montant" placeholder="Montant" required>
+                        <input type="text" class="form-control" name="montant" id="montant" placeholder="Montant" required>
                       </div>
 
                       <!-- Colonne Date -->
-                      <div class="col-md-4">
+                      <div class="col-md-3">
                         <label for="date" class="form-label">Date</label>
-                        <input type="date" class="form-control" id="date" required>
+                        <input type="date" class="form-control" name="date" id="date" required>
                       </div>
 
                       <!-- Colonne Créditeur -->
-                      <div class="col-md-4">
+                      <div class="col-md-3">
                         <label for="crediteur" class="form-label">Créditeur</label>
-                        <select class="form-select" id="crediteur" required>
+                        <select class="form-select" name="crediteur" id="crediteur" required>
                           <option selected disabled>Choisissez un créditeur</option>
                           <% listeMembres.forEach(element=> { %>
                           <option value="<%= element.username %>">
                             <%= element.username %>
                           </option>
                           <% }) %>
-                          <!-- Ajoutez d'autres options au besoin -->
                         </select>
+                      </div>
+
+                      <!-- Colonne Description -->
+                      <div class="col-md-10">
+                        <label for="description" class="form-label">Description</label>
+                        <input type="text" class="form-control" name="description" id="description" placeholder="Description" required>
                       </div>
                     </div>
 

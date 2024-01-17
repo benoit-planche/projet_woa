@@ -86,17 +86,18 @@ app.post('/cagnotes/cagnote',(req,res) => {
     if (req.body.id != null) {
         session.dernier_page = req.body.id;
     }
-    pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)',[session.dernier_page] , (err, result) => {
+    pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)  order by date_depense desc;',[session.dernier_page] , (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
             liste = result.rows;
 
-            pool.query('SELECT g.total_depense as totalDepense FROM projet.groupes g WHERE id_groupe = $1;',[session.dernier_page], (err, result) => {
+            pool.query('SELECT g.total_depense as totalDepense, g.owner_groupe as owner FROM projet.groupes g WHERE id_groupe = $1;',[session.dernier_page], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
                     totalDepense = result.rows[0].totaldepense;
+                    liste.owner = result.rows[0].owner;
                     pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE u.id_utilisateur != $1 and (a.id_utilisateur = $1 or a.id_amis = $1);',[session.userid], (err, result) => {
                         if (err) {
                             console.error('Erreur lors de l\'exécution de la requête :', err);
@@ -143,6 +144,14 @@ app.post('/user', (req, res) => {
     
 app.post('/update', (req, res) => {
     switch (req.body.ref) {
+        case 'add_transaction':
+            pool.query('INSERT INTO projet.depenses (id_groupe, id_utilisateur, montant_depense, description_depense, date_depense) VALUES ($1, (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2), $3, $4, $5)', [session.dernier_page, req.body.crediteur, req.body.montant, req.body.description, req.body.date], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                } 
+                res.redirect(307, '/cagnotes/cagnote');
+            });
+            break;
 
         case 'add_amis':
             pool.query('SELECT count(*) FROM projet.utilisateurs WHERE username_utilisateur = $1', [req.body.username], (err, result) => {
