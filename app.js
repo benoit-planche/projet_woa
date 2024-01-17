@@ -92,7 +92,7 @@ app.post('/cagnotes/cagnote',(req,res) => {
         } else {
             liste = result.rows;
 
-            pool.query('SELECT g.total_depense as totalDepense, g.owner_groupe as owner FROM projet.groupes g WHERE id_groupe = $1;',[session.dernier_page], (err, result) => {
+            pool.query('SELECT g.total_depense as totalDepense, g.id_owner as owner FROM projet.groupes g WHERE id_groupe = $1;',[session.dernier_page], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
@@ -107,14 +107,28 @@ app.post('/cagnotes/cagnote',(req,res) => {
                                 if (err) {
                                     console.error('Erreur lors de l\'exécution de la requête :', err);
                                 } else {
-                                    listeMembres = result.rows;
-                                    res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, listeAmis: listeAmis, listeMembres: listeMembres, session: session});
-                                }
+                                                                    }
                             });
                         }
                     });
                 }
             });
+            listeMembres = result.rows;
+                                    let listeAmisNonMembres = [];
+                                    listeAmis.forEach(user => {
+                                        let isMember = false;
+                                        listeMembres.forEach(membre => {
+                                            if (user.username == membre.username) {
+                                                isMember = true;
+                                            }
+                                        });
+                                        if (!isMember) {
+                                            listeAmisNonMembres.push(user.username);
+                                        }
+                                    });
+
+                                    res.render('cagnotes/cagnote.ejs',{liste: liste, totalDepense: totalDepense, listeAmis: listeAmisNonMembres, listeMembres: listeMembres, listeAmisNonMembres: listeAmisNonMembres, session: session});
+
         }
     });    
     
@@ -144,6 +158,15 @@ app.post('/user', (req, res) => {
     
 app.post('/update', (req, res) => {
     switch (req.body.ref) {
+
+        case 'add_membre':
+            pool.query('INSERT INTO projet.faitparties (id_groupe, id_utilisateur) VALUES ($1, (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2))', [session.dernier_page, req.body.membre], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                }
+                res.redirect(307, '/cagnotes/cagnote');
+            });
+
         case 'add_transaction':
             pool.query('INSERT INTO projet.depenses (id_groupe, id_utilisateur, montant_depense, description_depense, date_depense) VALUES ($1, (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2), $3, $4, $5)', [session.dernier_page, req.body.crediteur, req.body.montant, req.body.description, req.body.date], (err, result) => {
                 if (err) {
