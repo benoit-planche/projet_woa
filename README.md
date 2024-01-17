@@ -9,13 +9,13 @@
 2. Clonez ce dépôt sur votre machine locale :
 
     ```bash
-    git clone https://github.com/votre-utilisateur/votre-repo.git
+    git clone https://github.com/benoit-planche/projet_woa.git
     ```
 
 3. Accédez au répertoire du projet :
 
     ```bash
-    cd votre-repo
+    cd projet_woa
     ```
 
 4. Installez les dépendances du projet :
