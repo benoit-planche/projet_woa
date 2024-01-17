@@ -24,7 +24,7 @@
         <div class="container">
           <div class="row">
             <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
-              data-bs-target="#staticNewTrasac">
+              data-bs-target="#staticNewTransac">
               Nouvelle transaction
             </button>
             <button class="btn col m-5 p-3  bg-secondary text-center" data-bs-toggle="modal"
@@ -32,7 +32,8 @@
               Ajouter des membres
             </button>
             <% if (liste.owner==session.userid) { %>
-              <button class="btn col m-5 p-3 bg-secondary text-center">
+              <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"
+                data-bs-target="#staticGroupe">
                 Gérer la cagnotte
               </button>
               <% } %>
@@ -40,12 +41,13 @@
         </div>
         </div>
         <div class="m-5 p-3 border-top text-center "></div>
-        <div class="modal fade" id="staticNewTrasac" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
-          aria-labelledby="staticNewTrasacLabel" aria-hidden="true">
+
+        <div class="modal fade" id="staticNewTransac" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticNewTransacLabel" aria-hidden="true">
           <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable">
             <div class="modal-content">
               <div class="modal-header">
-                <h1 class="modal-title fs-5" id="staticNewTrasacLabel">Nouvelle transaction</h1>
+                <h1 class="modal-title fs-5" id="staticNewTransacLabel">Nouvelle transaction</h1>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
               </div>
               <div class="modal-body">
@@ -124,6 +126,69 @@
             </div>
           </div>
         </div>
+
+        <div class="modal fade" id="staticGroupe" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+          aria-labelledby="staticGroupe" aria-hidden="true">
+          <div class="modal-dialog modal-dialog-centered modal-dialog-scrollable modal-lg">
+            <div class="modal-content">
+              <div class="modal-header">
+                <h1 class="modal-title fs-5" id="staticGroupe">Gestion du groupe</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+              </div>
+              <div class="modal-body">
+                <form action="/update" method="post">
+                  <input type="hidden" name="ref" value="update_nom_groupe">
+                  <div class="row">
+                    <div class="col-md-3">
+                      <label for="montant" class="form-label">Nom</label>
+                      <input type="text" class="form-control" name="montant" id="montant"
+                        value="<%= liste.nom_groupe %>" required>
+                    </div>
+
+                    <div class="col-md-5">
+                      <label for="date" class="form-label">Liste membre :</label>
+                      <% listeMembres.forEach(element=> { %>
+                        <div class="row">
+                          <div class="col-md-4">
+                            <h5>
+                              <%= element.username %>
+                            </h5>
+                          </div>
+                          <div class="col-md-1">
+                            <button class="btn btn-danger btn-sm"
+                              onclick="deleteUser('<%= element.username %>')">X</button>
+                          </div>
+                        </div>
+                        <% }) %>
+                    </div>
+
+                    <div class="col-md-8">
+                      <label for="crediteur" class="form-label">Changer le propriétaire du groupe</label>
+                      <select class="form-select" name="owner" id="owner" required>
+                        <option selected disabled>
+                          <%= session.username%>
+                        </option>
+                        <% listeMembres.forEach(element=> { %>
+                          <option value="<%= element.username %>">
+                            <%= element.username %>
+                          </option>
+                          <% }) %>
+                      </select>
+                    </div>
+                  </div>
+                  <!-- Bouton de soumission -->
+                  <div class="row">
+                    <button type="submit" class="col-2 btn btn-primary mt-3">Envoyer</button>
+                    <button type="button" class="col-2 btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
+                    <div class="col-4 align-self-right">
+                      <button type="submit" class="btn btn-danger mt-3">Supprimer le groupe</button>
+                    </div>
+                  </div>
+          
+                </form>
+              </div>
+            </div>
+          </div>
         </div>
       </main>
 

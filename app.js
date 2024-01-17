@@ -92,12 +92,13 @@ app.post('/cagnotes/cagnote', (req, res) => {
         } else {
             liste = result.rows;
 
-            pool.query('SELECT g.total_depense as totalDepense, g.id_owner as owner FROM projet.groupes g WHERE id_groupe = $1;', [session.dernier_page], (err, result) => {
+            pool.query('SELECT g.nom_groupe as nom_groupe, g.total_depense as totalDepense, g.id_owner as owner FROM projet.groupes g WHERE id_groupe = $1;', [session.dernier_page], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
                     totalDepense = result.rows[0].totaldepense;
                     liste.owner = result.rows[0].owner;
+                    liste.nom_groupe = result.rows[0].nom_groupe;
                     pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE u.id_utilisateur != $1 and (a.id_utilisateur = $1 or a.id_amis = $1);', [session.userid], (err, result) => {
                         if (err) {
                             console.error('Erreur lors de l\'exécution de la requête :', err);
