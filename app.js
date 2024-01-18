@@ -371,4 +371,13 @@ app.post('/logout', (req, res) => {
     res.redirect('/');
 });
 
+app.use((req, res) => {
+    if (session) {
+        res.redirect(307, '/groupe');
+    }
+    else {
+        res.redirect('/');
+    }
+});
+
 app.listen(PORT, () => console.log(`Server Running at port ${PORT}`));
