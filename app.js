@@ -167,6 +167,44 @@ app.post('/user', (req, res) => {
 app.post('/update', (req, res) => {
     switch (req.body.ref) {
 
+        case 'supprimer_groupe':
+            pool.query('DELETE FROM projet.groupes WHERE id_groupe = $1', [session.dernier_page], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+
+                }
+                res.redirect(307, '/groupe');
+            }
+            );
+            break;
+
+        case 'changer_proprietaire_groupe':
+            pool.query('UPDATE projet.groupes SET id_owner = (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $1) WHERE id_groupe = $2', [req.body.new_owner, session.dernier_page], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                }
+                res.redirect(307, '/cagnotes/cagnote');
+            });
+            break;
+
+        case 'delete_membres':
+            pool.query('DELETE FROM projet.faitparties WHERE id_groupe = $1 AND id_utilisateur = (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2)', [session.dernier_page, req.body.username], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                }
+                res.redirect(307, '/cagnotes/cagnote');
+            });
+            break;
+
+        case 'update_nom_groupe':
+            pool.query('UPDATE projet.groupes SET nom_groupe = $1 WHERE id_groupe = $2', [req.body.nom_groupe, session.dernier_page], (err, result) => {
+                if (err) {
+                    console.error('Erreur lors de l\'exécution de la requête :', err);
+                }
+                res.redirect(307, '/cagnotes/cagnote');
+            });
+            break;
+
         case 'add_membre':
             pool.query('INSERT INTO projet.faitparties (id_groupe, id_utilisateur) VALUES ($1, (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $2))', [session.dernier_page, req.body.membre], (err, result) => {
                 if (err) {

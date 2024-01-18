@@ -12,7 +12,7 @@
                   <%= liste.nom_groupe %> :
                 </strong></h4>
               <h1>
-                <%= totalDepense %>
+                <%= totalDepense %> €
               </h1>
               <h4><a href="">Egaliser les dépenses</a></h4>
             </div>
@@ -143,11 +143,10 @@
                 <form action="/update" method="post" class="row">
                   <input type="hidden" name="ref" value="update_nom_groupe">
                   <div class="col-md-12">
-                    <label for="montant" class="form-label">Nom du groupe</label>
-                    <input type="text" class="form-control" name="montant" id="montant" value="<%= liste.nom_groupe %>"
+                    <label for="nom_groupe" class="form-label">Nom du groupe</label>
+                    <input type="text" class="form-control" name="nom_groupe" id="montant" value="<%= liste.nom_groupe %>"
                       required>
                   </div>
-                  <!-- Bouton de soumission à droite -->
                   <div class="col-md-12 mt-3 text-end">
                     <button type="submit" class="btn btn-primary">Envoyer</button>
                   </div>
@@ -155,22 +154,25 @@
 
                 <!-- Formulaire pour la liste des membres -->
                 <form action="/update" method="post" class="row mt-3">
-                  <input type="hidden" name="ref" value="update_liste_membres">
+                  <input type="hidden" name="ref" value="delete_membres">
                   <div class="col-md-12">
                     <label for="date" class="form-label">Liste des membres :</label>
-                    <% listeMembres.forEach(element=> { %>
-                      <div class="row">
-                        <div class="col-md-6">
-                          <h5>
-                            <%= element.username %>
-                          </h5>
+                    <div class="scrollable-members" style="height: 150px; overflow: auto;">
+                      <% listeMembres.forEach(element=> { %>
+                        <div class="row">
+                          <div class="col-md-6">
+                            <h5>
+                              <%= element.username %>
+                            </h5>
+                          </div>
+                          <div class="col-md-6">
+                            <button type="submit" class="btn btn-danger" name="username" value="<%= element.username %>">Retirer du
+                              groupe</button>
+                          </div>
                         </div>
-                        <div class="col-md-6">
-                          <button class="btn btn-danger btn-sm"
-                            onclick="deleteUser('<%= element.username %>')">Supprimer</button>
-                        </div>
-                      </div>
-                      <% }) %>
+                        <div class="border-top m-1 text-center "></div>
+                        <% }) %>
+                    </div>
                   </div>
                 </form>
 
@@ -179,27 +181,27 @@
                   <input type="hidden" name="ref" value="changer_proprietaire_groupe">
                   <div class="col-md-12">
                     <label for="crediteur" class="form-label">Changer le propriétaire du groupe</label>
-                    <select class="form-select" name="owner" id="owner" required>
+                    <select class="form-select" name="new_owner" id="owner" required>
                       <option selected disabled>
                         <%= session.username%>
                       </option>
                       <% listeMembres.forEach(element=> { %>
-                        <option value="<%= element.username %>">
-                          <%= element.username %>
-                        </option>
-                        <% }) %>
+                        <% if (element.username != session.username) { %>
+                          <option value="<%= element.username %>">
+                            <%= element.username %>
+                          </option>
+                        <% } %>
+                      <% }) %>
                     </select>
                   </div>
-                  <!-- Bouton de soumission à droite -->
                   <div class="col-md-12 mt-3 text-end">
                     <button type="submit" class="btn btn-primary">Envoyer</button>
                   </div>
                 </form>
 
                 <!-- Formulaire pour supprimer le groupe -->
-                <form action="/delete" method="post" class="row mt-3">
+                <form action="/update" method="post" class="row mt-3">
                   <input type="hidden" name="ref" value="supprimer_groupe">
-                  <!-- Bouton de soumission à droite -->
                   <div class="col-md-12 mt-3 text-start">
                     <button type="submit" class="btn btn-danger">Supprimer le groupe</button>
                   </div>

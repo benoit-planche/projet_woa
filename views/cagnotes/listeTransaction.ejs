@@ -6,9 +6,9 @@
                     <% if (element.username==session.username) { %>
                         <h5> Tu as payé <%= element.price %> €. Libeller "<%= element.description %>"</h5>
                         <% } else { %>
-                            <h5> <a href="./vue.js">
+                            <h5><strong>
                                     <%= element.user %>
-                                </a> a payé <%= element.price %> €. Libeller "<%= element.description %>"</h5>
+                                </strong> a payé <%= element.price %> €. Libeller "<%= element.description %>"</h5>
                             <% } %>
                 </div>
             </div>
