@@ -8,7 +8,7 @@
         <div class="container w-75 bg-light">
           <div class="row center p-5 m-5 text-center">
             <div class="col">
-              <h4>Dépense global du groupe :</h4>
+              <h4>Dépense global du groupe <strong><%= liste.nom_groupe %> :</strong></h4>
               <h1>
                 <%= totalDepense %>
               </h1>
@@ -179,9 +179,11 @@
                   <!-- Bouton de soumission -->
                   <div class="row">
                     <button type="submit" class="col-2 btn btn-primary mt-3">Envoyer</button>
-                    <button type="button" class="col-2 btn btn-secondary mt-3" data-bs-dismiss="modal">Close</button>
-                    <div class="col-4 align-self-right">
-                      <button type="submit" class="btn btn-danger mt-3">Supprimer le groupe</button>
+                    <button type="button" class="col-2 btn btn-secondary ms-2 mt-3" data-bs-dismiss="modal">Close</button>
+                    <div class="col-2">
+                    </div>
+                    <div class="col-4 ms-6 ">
+                      <button type="submit" class="btn btn-danger ms-6 mt-3">Supprimer le groupe</button>
                     </div>
                   </div>
           
