@@ -2,7 +2,6 @@ const express = require('express');
 const cookieParser = require("cookie-parser");
 const sessions = require('express-session');
 const { Pool } = require('pg');
-const e = require('express');
 
 const pool = new Pool({
     user: 'woa_application',
@@ -44,7 +43,8 @@ let success = {
     prenom: false,
     mail: false,
     mdp: false
-};;
+};
+
 let liste;
 let totalDepense;
 let listeGroupe;
@@ -92,51 +92,65 @@ app.post('/cagnotes/cagnote', (req, res) => {
     if (req.body.id != null) {
         session.dernier_page = req.body.id;
     }
-    pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)  order by date_depense desc;', [session.dernier_page], (err, result) => {
+
+    pool.query('SELECT ROUND(balance::numeric, 2) as balance from calculate_user_balance($1) where username_utilisateur = $2;', [session.dernier_page, session.username], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
         } else {
-            liste = result.rows;
-
-            pool.query('SELECT g.nom_groupe as nom_groupe, g.total_depense as totalDepense, g.id_owner as owner FROM projet.groupes g WHERE id_groupe = $1;', [session.dernier_page], (err, result) => {
+            let balance
+            if(result.rows[0].balance == null) {
+                balance = 0;
+            } else {
+                balance = result.rows[0].balance;
+            }
+            pool.query('SELECT u.username_utilisateur as username, u.prenom_utilisateur as user, d.montant_depense as price, d.description_depense as description FROM projet.utilisateurs u NATURAL JOIN projet.depenses d WHERE u.id_utilisateur IN ( SELECT id_utilisateur FROM projet.depenses WHERE id_groupe = $1)  order by date_depense desc;', [session.dernier_page], (err, result) => {
                 if (err) {
                     console.error('Erreur lors de l\'exécution de la requête :', err);
                 } else {
-                    totalDepense = result.rows[0].totaldepense;
-                    liste.owner = result.rows[0].owner;
-                    liste.nom_groupe = result.rows[0].nom_groupe;
-                    pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE u.id_utilisateur != $1 and (a.id_utilisateur = $1 or a.id_amis = $1);', [session.userid], (err, result) => {
+                    liste = result.rows;
+
+                    pool.query('SELECT g.nom_groupe as nom_groupe, g.total_depense as totalDepense, g.id_owner as owner FROM projet.groupes g WHERE id_groupe = $1;', [session.dernier_page], (err, result) => {
                         if (err) {
                             console.error('Erreur lors de l\'exécution de la requête :', err);
                         } else {
-                            listeAmis = result.rows;
-                            pool.query('SELECT u.username_utilisateur AS username, f.contribution  AS contribution FROM projet.utilisateurs u JOIN projet.faitparties f ON u.id_utilisateur = f.id_utilisateur WHERE f.id_groupe = $1;', [session.dernier_page], (err, result) => {
+                            totalDepense = result.rows[0].totaldepense;
+                            liste.owner = result.rows[0].owner;
+                            liste.nom_groupe = result.rows[0].nom_groupe;
+                            pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.amis a ON u.id_utilisateur = a.id_amis WHERE u.id_utilisateur != $1 and (a.id_utilisateur = $1 or a.id_amis = $1);', [session.userid], (err, result) => {
                                 if (err) {
                                     console.error('Erreur lors de l\'exécution de la requête :', err);
                                 } else {
-                                    listeMembres = result.rows;
-                                    let listeAmisNonMembres = [];
-                                    listeAmis.forEach(user => {
-                                        let isMember = false;
-                                        listeMembres.forEach(membre => {
-                                            if (user.username == membre.username) {
-                                                isMember = true;
-                                            }
-                                        });
-                                        if (!isMember) {
-                                            listeAmisNonMembres.push(user.username);
+                                    listeAmis = result.rows;
+                                    pool.query('SELECT u.username_utilisateur AS username, f.contribution  AS contribution FROM projet.utilisateurs u JOIN projet.faitparties f ON u.id_utilisateur = f.id_utilisateur WHERE f.id_groupe = $1;', [session.dernier_page], (err, result) => {
+                                        if (err) {
+                                            console.error('Erreur lors de l\'exécution de la requête :', err);
+                                        } else {
+                                            listeMembres = result.rows;
+                                            let listeAmisNonMembres = [];
+                                            listeAmis.forEach(user => {
+                                                let isMember = false;
+                                                listeMembres.forEach(membre => {
+                                                    if (user.username == membre.username) {
+                                                        isMember = true;
+                                                    }
+                                                });
+                                                if (!isMember) {
+                                                    listeAmisNonMembres.push(user.username);
+                                                }
+                                            });
+
+                                            res.render('cagnotes/cagnote.ejs',
+                                                {
+                                                    liste: liste,
+                                                    totalDepense: totalDepense,
+                                                    listeAmis: listeAmisNonMembres,
+                                                    listeMembres: listeMembres,
+                                                    listeAmisNonMembres: listeAmisNonMembres,
+                                                    session: session,
+                                                    balance: balance
+                                                });
                                         }
                                     });
-
-                                    res.render('cagnotes/cagnote.ejs',
-                                        {
-                                            liste: liste,
-                                            totalDepense: totalDepense,
-                                            listeAmis: listeAmisNonMembres,
-                                            listeMembres: listeMembres,
-                                            listeAmisNonMembres: listeAmisNonMembres,
-                                            session: session
-                                        });
                                 }
                             });
                         }
@@ -371,7 +385,7 @@ app.post('/compte/views', (req, res) => {
                 }
                 else {
                     demande_amis = result.rows;
-                    res.render('compte/views', { user: user, success: get_success, demande_amis: demande_amis });
+                     res.render('compte/views', { user: user, success: get_success, demande_amis: demande_amis });
                 }
             });
         }
