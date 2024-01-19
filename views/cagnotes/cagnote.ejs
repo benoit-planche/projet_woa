@@ -14,7 +14,15 @@
               <h1>
                 <%= totalDepense %> €
               </h1>
-              <h4><a href="">Egaliser les dépenses</a></h4>
+              <h4>
+                <% if (balance > 0) { %>
+                    On vous doit <%= balance %> €
+                <% } else if (balance < 0) { %>
+                    Vous devez <%= balance %> €
+                <% } else { %>
+                    Vous êtes à équilibre
+                <% } %>          
+               </h4>
             </div>
           </div>
         </div>

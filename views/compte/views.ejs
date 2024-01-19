@@ -34,7 +34,6 @@
                 <h1 class="title">Votre compte</h1>
 
                 <form action="/update" method="POST" class="form-inline mx-3">
-                    <input type="hidden" name="ref" value="update_email">
                     <div class="form-group row">
                         <label for="staticUsername" class="col-sm-1 col-form-label">Username</label>
                         <div class="col-sm-4">
@@ -49,7 +48,7 @@
                     <div class="form-group row">
                         <label for="staticEmail" class="col-sm-1 col-form-label">Email</label>
                         <div class="col-sm-4">
-                            <input type="text" name="email" class="form-control" id="staticEmail"
+                            <input type="email" name="email" class="form-control" id="staticEmail"
                                 value="<%= user.mail_utilisateur %>">
                         </div>
                         <div class="col-sm-1">
