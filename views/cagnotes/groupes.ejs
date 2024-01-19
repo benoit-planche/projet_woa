@@ -3,7 +3,9 @@
   <body>
     <%- include('../partials/header'); %>
 
-      <%- include('listeGroupe.ejs', {listeGroupe: listeGroupe}) %>
+      <div class="scrollable-segment" style="max-height: 900px; overflow: auto;">
+        <%- include('listeGroupe.ejs', {listeGroupe: listeGroupe}) %>
+      </div>
 
 
         <button class="btn col m-5 p-3 bg-secondary text-center" data-bs-toggle="modal"

@@ -50,6 +50,9 @@ let totalDepense;
 let listeGroupe;
 
 function groupe(req, res) {
+    if(!session) {
+        res.redirect('/');
+    }
     if (req.body.ref == 'new_groupe') {
         pool.query('INSERT INTO projet.groupes (nom_groupe, total_depense, id_owner) VALUES ($1, $2, $3)', [req.body.nom_groupe, 0, session.userid], (err, result) => {
             if (err) {
@@ -83,6 +86,9 @@ app.get('/', (req, res) => {
 });
 
 app.post('/cagnotes/cagnote', (req, res) => {
+    if(!session) {
+        res.redirect('/');
+    }
     if (req.body.id != null) {
         session.dernier_page = req.body.id;
     }
@@ -104,7 +110,7 @@ app.post('/cagnotes/cagnote', (req, res) => {
                             console.error('Erreur lors de l\'exécution de la requête :', err);
                         } else {
                             listeAmis = result.rows;
-                            pool.query('SELECT u.username_utilisateur AS username FROM projet.utilisateurs u JOIN projet.faitparties f ON u.id_utilisateur = f.id_utilisateur WHERE f.id_groupe = $1;', [session.dernier_page], (err, result) => {
+                            pool.query('SELECT u.username_utilisateur AS username, f.contribution  AS contribution FROM projet.utilisateurs u JOIN projet.faitparties f ON u.id_utilisateur = f.id_utilisateur WHERE f.id_groupe = $1;', [session.dernier_page], (err, result) => {
                                 if (err) {
                                     console.error('Erreur lors de l\'exécution de la requête :', err);
                                 } else {
@@ -165,7 +171,34 @@ app.post('/user', (req, res) => {
 });
 
 app.post('/update', (req, res) => {
+    if(!session) {
+        res.redirect('/');
+    }
     switch (req.body.ref) {
+
+        case 'update_contribution':
+            let total_contribution = 0;
+            let body = {username: {}, contribution: {}};
+            body.username = req.body.username;
+            body.contribution = req.body.contribution;
+             body.contribution.forEach(element => {
+                total_contribution += parseInt(element);
+            });
+            if (total_contribution == 100) {
+                let i = 0;
+                while (body.username.length > i) {
+                    pool.query('UPDATE projet.faitparties SET contribution = $1 WHERE id_groupe = $2 AND id_utilisateur = (SELECT id_utilisateur FROM projet.utilisateurs WHERE username_utilisateur = $3)', [body.contribution[i], session.dernier_page, body.username[i]], (err, result) => {
+                        if (err) {
+                            console.error('Erreur lors de l\'exécution de la requête :', err);
+                        }
+                    });
+                    i++;
+                }
+                res.redirect(307, '/cagnotes/cagnote');
+            } else {
+                res.redirect(307, '/cagnotes/cagnote');
+            } 
+            break;
 
         case 'supprimer_groupe':
             pool.query('DELETE FROM projet.groupes WHERE id_groupe = $1', [session.dernier_page], (err, result) => {
@@ -315,6 +348,9 @@ app.post('/update', (req, res) => {
 });
 
 app.post('/compte/views', (req, res) => {
+    if(!session) {
+        res.redirect('/');
+    }
     let get_success = success;
     success = {
         nom: false,
@@ -344,6 +380,9 @@ app.post('/compte/views', (req, res) => {
 })
 
 app.post('/connexion', (req, res) => {
+    if(!session) {
+        res.redirect('/');
+    }
     pool.query('INSERT INTO projet.utilisateurs (nom_utilisateur, prenom_utilisateur, username_utilisateur, mdp_utilisateur, mail_utilisateur) VALUES ($1, $2, $3, $4, $5)', [req.body.nom, req.body.prenom, req.body.username, req.body.password, req.body.mail], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
@@ -362,6 +401,9 @@ app.post('/groupe', groupe);
 app.get('/groupe', groupe);
 
 app.post('/logout', (req, res) => {
+    if(!session) {
+        res.redirect('/');
+    }
     pool.query('UPDATE projet.utilisateurs SET dernier_page = $1 WHERE username_utilisateur = $2', [session.dernier_page, session.username], (err, result) => {
         if (err) {
             console.error('Erreur lors de l\'exécution de la requête :', err);
