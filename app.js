@@ -5,7 +5,7 @@ const { Pool } = require('pg');
 
 const pool = new Pool({
     user: 'woa_application',
-    host: '192.168.122.126',
+    host: '162.38.112.140',
     database: 'woa',
     password: 'woaPoly',
     port: 5432,
