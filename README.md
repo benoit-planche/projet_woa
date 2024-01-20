@@ -32,4 +32,4 @@
 
 6. Ouvrez votre navigateur et accédez à l'URL suivante : `http://localhost:4000`
 
-Et voilà ! L'application devrait maintenant être lancée et accessible localement.
+Connectez vous sur le réseau polytech et voilà ! L'application devrait être lancée localement et la base de données devrait accessible .
